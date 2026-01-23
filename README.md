@@ -50,7 +50,7 @@ DB_PASSWORD=laravel_pass
 ・バックエンド： PHP/Laravel 8.83.8  
 ・データベース：MySQL  
 ・開発環境：Docker/Docker Compose  
-・その他：Fortify/Stripe/MailHog  
+・その他：Fortify/MailHog  
 
 
 ## URL

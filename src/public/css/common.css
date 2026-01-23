@@ -1,0 +1,129 @@
+.header {
+    background-color: black;
+    margin-bottom: 60px;
+}
+
+.header__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px 20px;
+}
+
+.form__content {
+    text-align: center;
+    margin: 0 auto;
+    max-width: 500px;
+    width: 80%;
+}
+
+.form__heading {
+    margin-bottom: 30px;
+}
+
+.form__group-title .form__label--item {
+    text-align: left;
+    display: block;
+    margin-top: 15px;
+}
+
+.form__group-content input {
+    width: 100%;
+    height: 35px;
+}
+
+.form__button {
+    margin-top: 60px;
+    margin-bottom: 20px;
+}
+
+.form__button-submit {
+    display: block;
+    text-align: center;
+    background-color: black;
+    width: 100%;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.button {
+    color: #80b9e5;
+    text-decoration: none;
+}
+
+.form__error {
+    /* height: 20px; */
+    font-size: 14px;
+    color: #ff0000;
+    text-align: left;
+}
+
+
+
+.header__nav ul {
+    display: flex;
+    align-items: center;
+
+}
+
+.logout__button,
+.mypage__button {
+    margin-right: 15px;
+}
+
+.sell__button {
+    background-color: #fff;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+.header__right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 63%;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.header__nav ul .sell__button a {
+    color: black;
+}
+
+.header__nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.header__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* border: 1px solid red; */
+}
+
+.input__txt {
+    width: 100%;
+    padding: 5px 15px;
+}
+
+/* 未認証ユーザー用ヘッダー */
+.login {
+    padding-right: 20px;
+}
+
+
+@media screen and (max-width: 850px) {
+    .header__nav ul li a {
+        font-size: 14px;
+    }
+
+    .header__logo {
+        width: 34%;
+    }
+
+    .header__logo img {
+        width: 100%;
+    }
+}
