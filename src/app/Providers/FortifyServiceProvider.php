@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Http\Request;
 use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
@@ -28,7 +29,10 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         // ログイン画面
-        Fortify::loginView(function () {
+        Fortify::loginView(function (Request $request) {
+            if ($request->is('admin/*')){
+                return view('auth.admin-login');
+            }
             return view('auth.login');
         });
 

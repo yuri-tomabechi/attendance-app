@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\AttendanceRequestController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +20,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/attendance/detail', [AttendanceRequestController::class, 'show']);
+    Route::post('/attendance/request', [AttendanceRequestController::class, 'store']);
+});
+
+Route::get(
+    '/mylogout',
+    function (Request $request) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login');
+    }
+);

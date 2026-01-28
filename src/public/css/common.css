@@ -64,53 +64,28 @@
 .header__nav ul {
     display: flex;
     align-items: center;
-
-}
-
-.logout__button,
-.mypage__button {
-    margin-right: 15px;
-}
-
-.sell__button {
-    background-color: #fff;
-    padding: 5px 15px;
-    border-radius: 5px;
 }
 
 .header__right {
     display: flex;
     align-items: center;
-    gap: 20px;
-    width: 63%;
     justify-content: space-between;
     padding: 0 20px;
-}
-
-.header__nav ul .sell__button a {
-    color: black;
 }
 
 .header__nav ul li a {
     color: white;
     text-decoration: none;
+    margin-right: 22px;
+}
+.header__nav ul .logout__button a{
+    margin-right: 0;
 }
 
 .header__inner {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* border: 1px solid red; */
-}
-
-.input__txt {
-    width: 100%;
-    padding: 5px 15px;
-}
-
-/* 未認証ユーザー用ヘッダー */
-.login {
-    padding-right: 20px;
 }
 
 
