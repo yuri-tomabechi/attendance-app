@@ -21,9 +21,10 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/attendance/detail', [AttendanceRequestController::class, 'show']);
     Route::post('/attendance/request', [AttendanceRequestController::class, 'store']);
 });
+
+Route::get('/attendance/detail', [AttendanceRequestController::class, 'show']);
 
 Route::get(
     '/mylogout',

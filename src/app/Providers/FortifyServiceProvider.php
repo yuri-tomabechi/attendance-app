@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Support\ServiceProvider;
@@ -39,11 +40,12 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         Fortify::authenticateUsing(function (Request $request) {
-
+            $loginRequest = LoginRequest::createFrom($request);
+            $loginRequest->validateResolved();
             if (
                 Auth::attempt(
-                    $request->only('email', 'password'),
-                    $request->boolean('remember')
+                    $loginRequest->only('email', 'password'),
+                    $loginRequest->boolean('remember')
                 )
             ) {
                 return Auth::user();
@@ -58,8 +60,8 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::createUsersUsing(CreateNewUser::class);
 
         // 登録成功後のリダイレクト先
-        // Fortify::verifyEmailView(function () {
-        //     return view('auth.verify-notice');
-        // });
+        Fortify::verifyEmailView(function () {
+            return view('auth.verify-notice');
+        });
     }
 }
