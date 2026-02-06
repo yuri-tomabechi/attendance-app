@@ -1,0 +1,61 @@
+.header{
+    margin-bottom: 0;
+}
+.clock-page{
+    background-color: #f0eff2;
+    height: 100vh;
+}
+
+.inner{
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.clock-page h1{
+    background-color: #c8c8c8;
+    border-radius: 20px;
+    padding: 3px 15px;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 300;
+    margin-top: 120px;
+}
+.clock-page h2{
+    font-weight: 300;
+    font-size: 28px;
+}
+.clock-page h3{
+    font-size: 42px;
+    margin: 0 0 40px 0;
+    letter-spacing: 3px;
+}
+button{
+    background-color: black;
+    color: white;
+    font-size: 20px;
+    padding: 5px 40px;
+    border-radius: 10px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.flex{
+    display: flex;
+    margin: 0 auto;
+    justify-content: center;
+    gap: 30px;
+}
+
+.white{
+    background-color: white;
+    color: black;
+    border: none;
+}
+
+.thanks{
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 1.6px;
+}

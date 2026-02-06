@@ -157,4 +157,9 @@ return [
         ]),
     ],
 
+    'redirects' => [
+        'register' => '/email/verify',
+        'email_verification' => '/attendance',
+    ],
+
 ];

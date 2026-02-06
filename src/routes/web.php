@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceRequestController;
+use App\Http\Controllers\AttendanceController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,11 +21,26 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+    
+    Route::post('/attendance/start', [AttendanceController::class, 'startWork'])
+        ->name('attendance.start');
+
+    Route::post('/attendance/break/start', [AttendanceController::class, 'startBreak'])
+        ->name('attendance.break.start');
+
+    Route::post('/attendance/break/end', [AttendanceController::class, 'endBreak'])
+        ->name('attendance.break.end');
+
+    Route::post('/attendance/end', [AttendanceController::class, 'endWork'])
+        ->name('attendance.end');
+
+
     Route::post('/attendance/request', [AttendanceRequestController::class, 'store']);
 });
 
-Route::get('/attendance/detail', [AttendanceRequestController::class, 'show']);
+// Route::get('/attendance/detail', [AttendanceRequestController::class, 'show']);
 
 Route::get(
     '/mylogout',
