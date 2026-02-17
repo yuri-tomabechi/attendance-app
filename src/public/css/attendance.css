@@ -1,9 +1,9 @@
 .header{
     margin-bottom: 0;
 }
-.clock-page{
+body{
     background-color: #f0eff2;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 .inner{
@@ -58,4 +58,142 @@ button{
     font-size: 18px;
     font-weight: bold;
     letter-spacing: 1.6px;
+}
+
+
+/* list-page */
+.list-inner, .detail-inner{
+    max-width: 800px;
+    margin:0 auto;
+    padding: 60px 20px;
+}
+.list-title, .detail-title {
+    font-size: 22px;
+    margin-bottom: 40px;
+    font-weight: bold;
+    border-left: 4px solid #000;
+    padding-left: 10px;
+}
+
+.month-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    font-size: 14px;
+}
+
+.month-nav a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+}
+
+.month-nav a:hover {
+    color: #000;
+}
+
+.month-title{
+    font-size: 20px;
+}
+
+.calender{
+    width: 25px;
+    margin-right: 10px;
+}
+
+.calender-flex{
+    align-items: center;
+    display: flex;
+}
+
+/* テーブル */
+.list-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+th {
+    padding: 12px 8px;
+    font-weight: 600;
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
+
+td {
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+tbody tr:hover {
+    background-color: #fafafa;
+}
+
+td a {
+    text-decoration: none;
+    font-weight: 600;
+    color: #000;
+    cursor: pointer;
+}
+
+td a:hover {
+    opacity: 0.6;
+}
+
+
+/* detail-page */
+
+.detail-title {
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.detail-card {
+    background: #f8f8f8;
+    border-radius: 10px;
+    padding: 40px;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.label {
+    width: 150px;
+    font-weight: bold;
+    color: #555;
+}
+
+.value {
+    flex: 1;
+}
+
+.remark {
+    width: 100%;
+    height: 80px;
+    resize: none;
+    padding: 10px;
+}
+
+.detail-button {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.detail-button button {
+    background: #000;
+    color: #fff;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
 }

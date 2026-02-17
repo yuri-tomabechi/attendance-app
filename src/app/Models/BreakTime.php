@@ -8,11 +8,19 @@ use App\Models\Attendance;
 
 class BreakTime extends Model
 {
+    protected $table = 'breaks';
+
     protected $fillable = [
         'attendance_id',
         'break_start',
         'break_end',
     ];
+
+    protected $casts = [
+        'break_start' => 'datetime',
+        'break_end'   => 'datetime',
+    ];
+
 
     public function attendance()
     {

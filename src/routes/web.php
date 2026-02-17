@@ -23,7 +23,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
-    
+
     Route::post('/attendance/start', [AttendanceController::class, 'startWork'])
         ->name('attendance.start');
 
@@ -36,8 +36,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/attendance/end', [AttendanceController::class, 'endWork'])
         ->name('attendance.end');
 
+    Route::get('/attendance/list', [AttendanceController::class, 'list'])
+        ->name('attendance.list');
 
-    Route::post('/attendance/request', [AttendanceRequestController::class, 'store']);
+    Route::get('/attendance/detail/{id}',[AttendanceController::class, 'show'])
+        ->name('attendance.show');
+
+    Route::post('/attendance/request', [AttendanceRequestController::class, 'store'])->name('attendance.request.store');
 });
 
 // Route::get('/attendance/detail', [AttendanceRequestController::class, 'show']);

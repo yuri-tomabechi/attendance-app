@@ -13,14 +13,14 @@
 <body>
     <header class="header">
         <div class="header__inner">
-            <a class="header__logo" href="/">
+            <a class="header__logo" href="/attendance">
                 <img src="{{ asset('images/logo.svg') }}" alt="">
             </a>
             <div class="header__right">
                 <nav class="header__nav">
                     <ul>
-                        <li class="attendance"><a href="">勤怠</a></li>
-                        <li class="all_attendance"><a href="">勤怠一覧</a></li>
+                        <li class="attendance"><a href="{{ route('attendance.index') }}">勤怠</a></li>
+                        <li class="all_attendance"><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
                         <li><a href="request">申請</a></li>
                         <li class="logout__button"><a href="/mylogout">ログアウト</a></li>
                     </ul>

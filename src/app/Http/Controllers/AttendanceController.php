@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\BreakTime;
 
 class AttendanceController extends Controller
 {
@@ -30,26 +32,44 @@ class AttendanceController extends Controller
     public function startBreak()
     {
         $attendance = Attendance::where('user_id', auth()->id())
-            ->where('status', 1) // 勤務中のみ
+            ->where('status', 1)
             ->latest()
             ->firstOrFail();
 
+        // 休憩レコード作成
+        BreakTime::create([
+            'attendance_id' => $attendance->id,
+            'break_start' => now(),
+        ]);
+
         $attendance->update([
-            'status' => 2, // 休憩中
+            'status' => 2,
         ]);
 
         return back();
     }
 
+
     public function endBreak()
     {
         $attendance = Attendance::where('user_id', auth()->id())
-            ->where('status', 2) // 休憩中のみ
+            ->where('status', 2)
             ->latest()
             ->firstOrFail();
 
+        $break = BreakTime::where('attendance_id', $attendance->id)
+            ->whereNull('break_end')
+            ->latest()
+            ->first();
+
+        if ($break) {
+            $break->update([
+                'break_end' => now(),
+            ]);
+        }
+
         $attendance->update([
-            'status' => 1, // 勤務中
+            'status' => 1,
         ]);
 
         return back();
@@ -68,5 +88,36 @@ class AttendanceController extends Controller
         ]);
 
         return back();
+    }
+
+    public function list(Request $request)
+    {
+        $month = $request->get('month', now()->format('Y-m'));
+
+        $start = Carbon::parse($month)->startOfMonth();
+        $end   = Carbon::parse($month)->endOfMonth();
+
+        $attendances = Attendance::with('breaks')
+            ->where('user_id', auth()->id())
+            ->whereBetween('work_date', [$start, $end])
+            ->get()
+            ->keyBy(function ($item) {
+                return $item->work_date->format('Y-m-d');
+            });
+
+        return view('user.attendance.list', compact('month', 'start', 'end', 'attendances'));
+    }
+
+    public function show($id)
+    {
+        $attendance = Attendance::with('breaks', 'user')
+            ->findOrFail($id);
+
+
+        if ($attendance->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        return view('user.attendance.detail', compact('attendance'));
     }
 }
