@@ -21,6 +21,30 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+Route::get('/admin/login', function () {
+    return view('auth.admin-login');
+})->name('admin.login');
+
+
+
+Route::get('/redirect', function () {
+
+    $user = auth()->user();
+
+    if (!$user) {
+        return redirect('/login');
+    }
+
+    if ($user->role === 'admin') {
+        // return redirect('/admin/attendance/list');
+        return view('admin/attendance/index');
+    }
+
+    return redirect('/attendance');
+})->middleware('auth');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
 
@@ -39,7 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/list', [AttendanceController::class, 'list'])
         ->name('attendance.list');
 
-    Route::get('/attendance/detail/{id}',[AttendanceController::class, 'show'])
+    Route::get('/attendance/detail/{id}', [AttendanceController::class, 'show'])
         ->name('attendance.show');
 
     Route::post('/attendance/request', [AttendanceRequestController::class, 'store'])

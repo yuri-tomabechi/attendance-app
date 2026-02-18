@@ -8,6 +8,8 @@ use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use Illuminate\Validation\ValidationException;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -32,26 +34,25 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         // ログイン画面
-        Fortify::loginView(function (Request $request) {
-            if ($request->is('admin/*')){
-                return view('auth.admin-login');
-            }
+        Fortify::loginView(function () {
             return view('auth.login');
         });
 
-        Fortify::authenticateUsing(function (Request $request) {
+        // Fortify::authenticateUsing(function (Request $request) {
 
-            if (Auth::attempt(
-                $request->only('email', 'password'),
-                $request->boolean('remember')
-            )) {
-                return Auth::user();
-            }
+        //     $user = User::where('email', $request->email)->first();
 
-            throw ValidationException::withMessages([
-                'email' => 'ログイン情報が登録されていません',
-            ]);
-        });
+        //     if (
+        //         $user &&
+        //         Hash::check($request->password, $user->password)
+        //     ) {
+        //         return $user;
+        //     }
+
+        //     throw ValidationException::withMessages([
+        //         'email' => 'ログイン情報が登録されていません',
+        //     ]);
+        // });
 
         // 独自の登録処理クラスを指定
         Fortify::createUsersUsing(CreateNewUser::class);
