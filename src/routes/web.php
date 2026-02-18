@@ -42,7 +42,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/detail/{id}',[AttendanceController::class, 'show'])
         ->name('attendance.show');
 
-    Route::post('/attendance/request', [AttendanceRequestController::class, 'store'])->name('attendance.request.store');
+    Route::post('/attendance/request', [AttendanceRequestController::class, 'store'])
+        ->name('attendance.request.store');
+
+    Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'index'])
+        ->name('attendance_requests.index');
+
+    Route::get('/stamp_correction_request/{id}', [AttendanceRequestController::class, 'show'])
+        ->name('attendance_requests.show');
+
+    // Route::get('/stamp_correction_request/{id}', [AttendanceRequestController::class, 'show'])
+    //     ->name('attendance_requests.show');
 });
 
 // Route::get('/attendance/detail', [AttendanceRequestController::class, 'show']);

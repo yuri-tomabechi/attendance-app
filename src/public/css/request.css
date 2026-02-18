@@ -1,0 +1,95 @@
+/* 全体 */
+.request-inner {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.page-title {
+    font-size: 22px;
+    margin-bottom: 40px;
+    font-weight: bold;
+    border-left: 4px solid #000;
+    padding-left: 10px;
+}
+
+/* タブ */
+.tab-area {
+    display: flex;
+    gap: 30px;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.tab {
+    padding: 10px 0;
+    text-decoration: none;
+    color: #555;
+    font-weight: bold;
+}
+
+.tab.active {
+    border-bottom: 3px solid black;
+    color: black;
+}
+
+/* テーブル */
+.table-wrapper {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    color: #737373;
+}
+
+.request-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.request-table th,
+.request-table td {
+    padding: 14px 16px;
+    text-align: center;
+    border-bottom: 2px solid #eee;
+}
+
+.request-table th {
+    font-weight: bold;
+}
+
+/* ステータス */
+.status {
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.status.approved {
+    background: #e6f7e6;
+    color: #008000;
+}
+
+/* 詳細リンク */
+.detail-link {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+}
+
+.detail-link:hover {
+    opacity: 0.6;
+}
+
+/* 申請理由は長い可能性 */
+.reason {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 空データ */
+.empty {
+    padding: 30px;
+    color: #888;
+}

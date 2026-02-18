@@ -21,7 +21,7 @@
                     <ul>
                         <li class="attendance"><a href="{{ route('attendance.index') }}">勤怠</a></li>
                         <li class="all_attendance"><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
-                        <li><a href="request">申請</a></li>
+                        <li class="request"><a href="{{ route('attendance_requests.index') }}">申請</a></li>
                         <li class="logout__button"><a href="/mylogout">ログアウト</a></li>
                     </ul>
                 </nav>

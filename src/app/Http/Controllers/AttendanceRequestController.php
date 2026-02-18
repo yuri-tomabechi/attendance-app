@@ -12,9 +12,22 @@ use Illuminate\Support\Facades\DB;
 
 class AttendanceRequestController extends Controller
 {
-    public function show()
+    // public function show()
+    // {
+    //     return view('user.attendance.detail');
+    // }
+
+    public function show($id)
     {
-        return view('user.attendance.detail');
+        $attendanceRequest = AttendanceRequestModel::with([
+            'attendance.breaks',
+            'items'
+        ])->findOrFail($id);
+
+        return view('user.attendance.detail', [
+            'attendance' => $attendanceRequest->attendance,
+            'pendingRequest' => $attendanceRequest
+        ]);
     }
 
     public function store(AttendanceRequest $request)
@@ -162,5 +175,20 @@ class AttendanceRequestController extends Controller
             }
         );
         return back();
+    }
+
+    public function index(Request $request)
+    {
+        $query = AttendanceRequestModel::with(['user', 'attendance']);
+
+        if ($request->status === 'approved') {
+            $query->where('status', 'approved');
+        } else {
+            $query->where('status', 'pending');
+        }
+
+        $requests = $query->latest()->get();
+
+        return view('user.requests.index', compact('requests'));
     }
 }

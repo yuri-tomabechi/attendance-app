@@ -40,14 +40,11 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         Fortify::authenticateUsing(function (Request $request) {
-            $loginRequest = LoginRequest::createFrom($request);
-            $loginRequest->validateResolved();
-            if (
-                Auth::attempt(
-                    $loginRequest->only('email', 'password'),
-                    $loginRequest->boolean('remember')
-                )
-            ) {
+
+            if (Auth::attempt(
+                $request->only('email', 'password'),
+                $request->boolean('remember')
+            )) {
                 return Auth::user();
             }
 

@@ -11,7 +11,7 @@ class AttendanceController extends Controller
     public function index()
     {
         $attendance = Attendance::where('user_id', auth()->id())
-            ->latest()
+            ->whereDate('work_date', now()->toDateString())
             ->first();
 
         return view('user.attendance.clock', compact('attendance'));
@@ -110,14 +110,19 @@ class AttendanceController extends Controller
 
     public function show($id)
     {
-        $attendance = Attendance::with('breaks', 'user')
+        $attendance = Attendance::with(['breaks', 'user', 'requests'])
             ->findOrFail($id);
+
+        $pendingRequest = $attendance->requests()
+            ->where('status', 'pending')
+            ->exists();
+
 
 
         if ($attendance->user_id !== auth()->id()) {
             abort(403);
         }
 
-        return view('user.attendance.detail', compact('attendance'));
+        return view('user.attendance.detail', compact('attendance', 'pendingRequest'));
     }
 }

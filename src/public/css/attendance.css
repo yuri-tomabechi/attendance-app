@@ -197,3 +197,9 @@ td a:hover {
     border: none;
     border-radius: 5px;
 }
+
+
+.pending-message {
+    color: red;
+    margin-top: 20px;
+}

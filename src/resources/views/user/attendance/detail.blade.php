@@ -37,35 +37,69 @@
                 <div class="detail-row">
                     <span class="label">出勤・退勤</span>
                     <span class="value">
-                        <input type="time" name="clock_in" value="{{ $attendance->clock_in?->format('H:i') }}">
-                        ～
-                        <input type="time" name="clock_out" value="{{ $attendance->clock_out?->format('H:i') }}">
+                        @if (!$pendingRequest)
+                            <input type="time" name="clock_in" value="{{ $attendance->clock_in?->format('H:i') }}">
+                            ～
+                            <input type="time" name="clock_out" value="{{ $attendance->clock_out?->format('H:i') }}">
+                        @else
+                            <span class="readonly">
+                                {{ $attendance->clock_in?->format('H:i') ?? '--:--' }}
+                                ～
+                                {{ $attendance->clock_out?->format('H:i') ?? '--:--' }}
+                            </span>
+                        @endif
                     </span>
                 </div>
 
                 @foreach ($attendance->breaks as $index => $break)
                     <div class="detail-row">
                         <span class="label">休憩{{ $index + 1 }}</span>
-                        <input type="time" name="breaks[{{ $index }}][break_start]"
-                            value="{{ $break->break_start?->format('H:i') }}">
 
-                        〜
+                        @if (!$pendingRequest)
+                            <input type="time" name="breaks[{{ $index }}][break_start]"
+                                value="{{ $break->break_start?->format('H:i') }}">
 
-                        <input type="time" name="breaks[{{ $index }}][break_end]"
-                            value="{{ $break->break_end?->format('H:i') }}">
-                        <input type="hidden" name="breaks[{{ $index }}][id]" value="{{ $break->id }}">
+                            〜
+
+                            <input type="time" name="breaks[{{ $index }}][break_end]"
+                                value="{{ $break->break_end?->format('H:i') }}">
+
+                            <input type="hidden" name="breaks[{{ $index }}][id]" value="{{ $break->id }}">
+                        @else
+                            <span class="readonly">
+                                {{ $break->break_start?->format('H:i') ?? '--:--' }}
+                                〜
+                                {{ $break->break_end?->format('H:i') ?? '--:--' }}
+                            </span>
+                        @endif
                     </div>
                 @endforeach
 
                 <div class="detail-row">
                     <span class="label">備考</span>
-                    <textarea name="reason" class="remark"></textarea>
+                    @if (!$pendingRequest)
+                        <textarea name="reason" class="remark"></textarea>
+                    @else
+                        @php
+                            $pending = $attendance->requests->where('status', 'pending')->first();
+                        @endphp
+
+                        <div class="readonly-remark">
+                            {{ $pending->reason }}
+                        </div>
+                    @endif
                 </div>
 
             </div>
 
             <div class="detail-button">
-                <button>修正</button>
+                @if (!$pendingRequest)
+                    <button type="submit">修正</button>
+                @else
+                    <p class="pending-message">
+                        ※承認待ちのため申請はできません。
+                    </p>
+                @endif
             </div>
         </form>
     </div>
