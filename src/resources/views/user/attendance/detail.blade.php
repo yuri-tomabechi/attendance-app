@@ -16,7 +16,7 @@
 
         <h1 class="detail-title">勤怠詳細</h1>
 
-        <form method="POST" action="{{ route('attendance.request.store', $attendance->id) }}">
+        <form method="POST" action="{{ route('attendance.request.store') }}">
             @csrf
             <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
 
@@ -37,15 +37,19 @@
                 <div class="detail-row">
                     <span class="label">出勤・退勤</span>
                     <span class="value">
-                        @if (!$pendingRequest)
+                        @if (empty($pendingRequest))
                             <input type="time" name="clock_in" value="{{ $attendance->clock_in?->format('H:i') }}">
                             ～
                             <input type="time" name="clock_out" value="{{ $attendance->clock_out?->format('H:i') }}">
                         @else
                             <span class="readonly">
-                                {{ $attendance->clock_in?->format('H:i') ?? '--:--' }}
+                                {{ $pendingRequest && $pendingRequest->items->where('type', 'clock_in')->first()
+                                    ? \Carbon\Carbon::parse($pendingRequest->items->where('type', 'clock_in')->first()->after_time)->format('H:i')
+                                    : '--:--' }}
                                 ～
-                                {{ $attendance->clock_out?->format('H:i') ?? '--:--' }}
+                                {{ $pendingRequest && $pendingRequest->items->where('type', 'clock_out')->first()
+                                    ? \Carbon\Carbon::parse($pendingRequest->items->where('type', 'clock_out')->first()->after_time)->format('H:i')
+                                    : '--:--' }}
                             </span>
                         @endif
                     </span>
@@ -66,10 +70,26 @@
 
                             <input type="hidden" name="breaks[{{ $index }}][id]" value="{{ $break->id }}">
                         @else
+                            @php
+                                $pendingStart = $pendingRequest->items
+                                    ->where('type', 'break_start')
+                                    ->where('target_id', $break->id)
+                                    ->first();
+
+                                $pendingEnd = $pendingRequest->items
+                                    ->where('type', 'break_end')
+                                    ->where('target_id', $break->id)
+                                    ->first();
+                            @endphp
+
                             <span class="readonly">
-                                {{ $break->break_start?->format('H:i') ?? '--:--' }}
+                                {{ $pendingStart && $pendingStart->after_time
+                                    ? \Carbon\Carbon::parse($pendingStart->after_time)->format('H:i')
+                                    : '--:--' }}
                                 〜
-                                {{ $break->break_end?->format('H:i') ?? '--:--' }}
+                                {{ $pendingEnd && $pendingEnd->after_time
+                                    ? \Carbon\Carbon::parse($pendingEnd->after_time)->format('H:i')
+                                    : '--:--' }}
                             </span>
                         @endif
                     </div>
@@ -77,15 +97,11 @@
 
                 <div class="detail-row">
                     <span class="label">備考</span>
-                    @if (!$pendingRequest)
+                    @if (empty($pendingRequest))
                         <textarea name="reason" class="remark"></textarea>
                     @else
-                        @php
-                            $pending = $attendance->requests->where('status', 'pending')->first();
-                        @endphp
-
                         <div class="readonly-remark">
-                            {{ $pending->reason }}
+                            {{ $pendingRequest->reason }}
                         </div>
                     @endif
                 </div>

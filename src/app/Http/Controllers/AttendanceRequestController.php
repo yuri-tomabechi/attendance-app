@@ -26,7 +26,8 @@ class AttendanceRequestController extends Controller
 
         return view('user.attendance.detail', [
             'attendance' => $attendanceRequest->attendance,
-            'pendingRequest' => $attendanceRequest
+            'pendingRequest' => $attendanceRequest ?? null
+
         ]);
     }
 

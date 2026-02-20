@@ -115,7 +115,7 @@ class AttendanceController extends Controller
 
         $pendingRequest = $attendance->requests()
             ->where('status', 'pending')
-            ->exists();
+            ->first();
 
 
 
