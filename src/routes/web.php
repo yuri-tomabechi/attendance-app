@@ -21,9 +21,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+
+    Route::get('/attendance/index', function () {
+        return view('admin.attendance.index');
+    });
+});
 
 
 Route::get('/admin/login', function () {
+    if (auth()->check()) {
+        auth()->logout();
+    }
+
     return view('auth.admin-login');
 })->name('admin.login');
 
@@ -38,8 +48,7 @@ Route::get('/redirect', function () {
     }
 
     if ($user->role === 'admin') {
-        // return redirect('/admin/attendance/list');
-        return view('admin/attendance/index');
+        return redirect('/admin/attendance/index');
     }
 
     return redirect('/attendance');
