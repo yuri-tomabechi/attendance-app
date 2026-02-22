@@ -69,6 +69,15 @@ class AttendanceRequest extends FormRequest
                         }
                     }
 
+                    if ($breakStart && $breakEnd) {
+                        if ($breakStart >= $breakEnd) {
+                            $validator->errors()->add(
+                                'breaks',
+                                '休憩時間が不適切な値です'
+                            );
+                        }
+                    }
+
                     if ($clockOut && $breakEnd) {
                         if ($breakEnd > $clockOut) {
                             $validator->errors()->add(
@@ -80,5 +89,11 @@ class AttendanceRequest extends FormRequest
                 }
             }
         });
+    }
+    public function messages()
+    {
+        return [
+            'reason.required' => '備考を記入してください',
+        ];
     }
 }

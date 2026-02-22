@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,9 +24,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
-    Route::get('/attendance/index', function () {
-        return view('admin.attendance.index');
-    });
+    Route::get('/attendance/index', [AdminAttendanceController::class, 'index'])
+        ->name('admin.attendance.index');
 });
 
 

@@ -1,0 +1,77 @@
+body {
+    background-color: #f0eff2;
+}
+
+.admin-inner {
+    max-width: 800px;
+    margin: 60px auto;
+    text-align: center;
+    padding: 0 20px;
+}
+
+/* タイトル */
+.admin-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+/* 日付ナビ */
+.date-nav {
+    background: #eee;
+    border-radius: 8px;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.date-nav a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+}
+
+.date-nav span {
+    font-weight: bold;
+}
+
+/* カード */
+.attendance-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+/* テーブル */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th {
+    padding: 15px;
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 1px solid #ddd;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 行ホバー */
+tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* 詳細リンク */
+td a {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+}

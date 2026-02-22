@@ -149,7 +149,18 @@ td a:hover {
 
 
 /* detail-page */
+input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
 
+input[type="time"] {
+    padding: 5px 10px;
+}
+
+.wave{
+    padding: 0 5px;
+}
 .detail-title {
     font-size: 24px;
     margin-bottom: 30px;
