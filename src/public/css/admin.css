@@ -11,14 +11,25 @@ body {
 
 /* タイトル */
 .admin-title {
-    font-size: 24px;
     font-weight: bold;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+    text-align: left;
+    font-size: 22px;
+    border-left: 4px solid #000;
+    padding-left: 10px;
 }
 
-/* 日付ナビ */
+.calender {
+    width: 25px;
+    margin-right: 10px;
+}
+
+.calender-flex {
+    align-items: center;
+    display: flex;
+}
 .date-nav {
-    background: #eee;
+    background: white;
     border-radius: 8px;
     padding: 12px 20px;
     display: flex;

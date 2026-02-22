@@ -18,9 +18,9 @@
             <div class="header__right">
                 <nav class="header__nav">
                     <ul>
-                        <li class="all_attendance"><a href="">勤怠一覧</a></li>
+                        <li class="all_attendance"><a href="{{ route('admin.attendance.index') }}">勤怠一覧</a></li>
                         <li class="all_staff"><a href="">スタッフ一覧</a></li>
-                        <li><a href="all_request">申請一覧</a></li>
+                        <li><a href="">申請一覧</a></li>
                         <li class="logout__button"><a href="/mylogout">ログアウト</a></li>
                     </ul>
                 </nav>

@@ -1,4 +1,8 @@
-@extends('layouts.user')
+@if(auth()->user()->role === 'admin')
+    @extends('layouts.admin')
+@else
+    @extends('layouts.user')
+@endif
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/attendance.css') }}">

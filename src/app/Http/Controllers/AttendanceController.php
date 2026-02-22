@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -91,22 +92,33 @@ class AttendanceController extends Controller
         return back();
     }
 
-    public function list(Request $request)
+    public function list(Request $request, $userId = null)
     {
         $month = $request->get('month', now()->format('Y-m'));
 
         $start = Carbon::parse($month)->startOfMonth();
         $end   = Carbon::parse($month)->endOfMonth();
 
+        if (auth()->user()->role === 'admin' && $userId) {
+            $targetUser = User::findOrFail($userId);
+        } else {
+            $targetUser = auth()->user();
+        }
+
         $attendances = Attendance::with('breaks')
-            ->where('user_id', auth()->id())
+            ->where('user_id', $targetUser->id)
             ->whereBetween('work_date', [$start, $end])
             ->get()
             ->keyBy(function ($item) {
                 return $item->work_date->format('Y-m-d');
             });
-
-        return view('user.attendance.list', compact('month', 'start', 'end', 'attendances'));
+        return view('list', compact(
+            'month',
+            'start',
+            'end',
+            'attendances',
+            'targetUser'
+        ));
     }
 
     public function show($id)
@@ -118,12 +130,13 @@ class AttendanceController extends Controller
             ->where('status', 'pending')
             ->first();
 
-
-
-        if ($attendance->user_id !== auth()->id()) {
+        if (
+            auth()->user()->role !== 'admin' &&
+            $attendance->user_id !== auth()->id()
+        ) {
             abort(403);
         }
 
-        return view('user.attendance.detail', compact('attendance', 'pendingRequest'));
+        return view('detail', compact('attendance', 'pendingRequest'));
     }
 }
