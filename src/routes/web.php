@@ -30,8 +30,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/attendance/detail/{id}',[AttendanceController::class, 'show'])
         ->name('admin.attendance.show');
 
-    Route::get('/attendance/list/{userId}', [AttendanceController::class, 'list'])
+    Route::get('/attendance/list/{userId}', [AdminAttendanceController::class, 'list'])
         ->name('admin.attendance.list');
+
+    Route::get('/staff', [AdminAttendanceController::class, 'staff'])
+        ->name('admin.staff.list');
 });
 
 
@@ -89,6 +92,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/stamp_correction_request/{id}', [AttendanceRequestController::class, 'show'])
         ->name('attendance_requests.show');
+
+    Route::post('/attendance_requests/{id}/approve',
+    [AttendanceRequestController::class, 'approve'])
+        ->name('attendance_requests.approve');
 
     // Route::get('/stamp_correction_request/{id}', [AttendanceRequestController::class, 'show'])
     //     ->name('attendance_requests.show');

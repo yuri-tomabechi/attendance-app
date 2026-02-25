@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 @endsection
 
 @section('content')
@@ -55,7 +55,11 @@
                     <td>{{ gmdate('H:i', $breakMinutes * 60) }}</td>
                     <td>{{ gmdate('H:i', $workMinutes * 60) }}</td>
                     <td>
-                        <a href="#">詳細</a>
+                        @if ($attendance)
+                            <a href="{{ route('admin.attendance.show', $attendance->id) }}">詳細</a>
+                        @else
+                            --
+                        @endif
                     </td>
                 </tr>
             @endforeach

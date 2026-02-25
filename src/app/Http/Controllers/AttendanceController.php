@@ -100,13 +100,13 @@ class AttendanceController extends Controller
         $end   = Carbon::parse($month)->endOfMonth();
 
         if (auth()->user()->role === 'admin' && $userId) {
-            $targetUser = User::findOrFail($userId);
+            $user = User::findOrFail($userId);
         } else {
-            $targetUser = auth()->user();
+            $user = auth()->user();
         }
 
         $attendances = Attendance::with('breaks')
-            ->where('user_id', $targetUser->id)
+            ->where('user_id', $user->id)
             ->whereBetween('work_date', [$start, $end])
             ->get()
             ->keyBy(function ($item) {
@@ -117,7 +117,7 @@ class AttendanceController extends Controller
             'start',
             'end',
             'attendances',
-            'targetUser'
+            'user'
         ));
     }
 

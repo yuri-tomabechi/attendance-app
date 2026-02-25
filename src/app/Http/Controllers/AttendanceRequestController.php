@@ -24,7 +24,7 @@ class AttendanceRequestController extends Controller
             'items'
         ])->findOrFail($id);
 
-        return view('user.attendance.detail', [
+        return view('detail', [
             'attendance' => $attendanceRequest->attendance,
             'pendingRequest' => $attendanceRequest ?? null
 
@@ -190,6 +190,44 @@ class AttendanceRequestController extends Controller
 
         $requests = $query->latest()->get();
 
-        return view('user.requests.index', compact('requests'));
+        return view('requests.index', compact('requests'));
+    }
+    
+
+    public function approve($id)
+    {
+        $attendanceRequest = AttendanceRequestModel::with('items')->findOrFail($id);
+
+        DB::transaction(function () use ($attendanceRequest) {
+
+            foreach ($attendanceRequest->items as $item) {
+
+                if ($item->type === 'clock_in') {
+                    Attendance::where('id', $item->target_id)
+                        ->update(['clock_in' => $item->after_time]);
+                }
+
+                if ($item->type === 'clock_out') {
+                    Attendance::where('id', $item->target_id)
+                        ->update(['clock_out' => $item->after_time]);
+                }
+
+                if ($item->type === 'break_start') {
+                    BreakTime::where('id', $item->target_id)
+                        ->update(['break_start' => $item->after_time]);
+                }
+
+                if ($item->type === 'break_end') {
+                    BreakTime::where('id', $item->target_id)
+                        ->update(['break_end' => $item->after_time]);
+                }
+            }
+
+            $attendanceRequest->update([
+                'status' => 'approved'
+            ]);
+        });
+
+        return redirect()->route('attendance_requests.index');
     }
 }

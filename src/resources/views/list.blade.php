@@ -1,27 +1,47 @@
-@extends('layouts.user')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.user')
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
 @endsection
 
+@php
+    $isAdmin = auth()->user()->role === 'admin';
+@endphp
+
+
 @section('content')
     <div class="list-inner">
         @if (auth()->user()->role === 'admin')
-            <h1>{{ $user->name }}さんの勤怠</h1>
+            <h1 class="list-title">{{ $user->name }}さんの勤怠</h1>
         @else
             <h1 class="list-title">勤怠一覧</h1>
         @endif
 
 
         <div class="month-nav">
-            <a href="{{ route('attendance.list', ['month' => \Carbon\Carbon::parse($month)->subMonth()->format('Y-m')]) }}">
+            <a href="{{ $isAdmin
+                    ? route('admin.attendance.list', [
+                        'userId' => $user->id,
+                        'month' => \Carbon\Carbon::parse($month)->subMonth()->format('Y-m'),
+                    ])
+                    : route('attendance.list', [
+                        'month' => \Carbon\Carbon::parse($month)->subMonth()->format('Y-m'),
+                    ]) }}">
                 ← 前月
             </a>
             <div class="calender-flex">
                 <img src="{{ asset('images/calender.svg') }}" alt="" class="calender">
                 <span class="month-title">{{ \Carbon\Carbon::parse($month)->format('Y/m') }}</span>
             </div>
-            <a href="{{ route('attendance.list', ['month' => \Carbon\Carbon::parse($month)->addMonth()->format('Y-m')]) }}">
+            <a
+                href="{{ $isAdmin
+                    ? route('admin.attendance.list', [
+                        'userId' => $user->id,
+                        'month' => \Carbon\Carbon::parse($month)->addMonth()->format('Y-m'),
+                    ])
+                    : route('attendance.list', [
+                        'month' => \Carbon\Carbon::parse($month)->addMonth()->format('Y-m'),
+                    ]) }}">
                 翌月 →
             </a>
         </div>
@@ -77,10 +97,10 @@
                 @endfor
             </tbody>
         </table>
-        @if (auth()->user()->role === 'admin')
+        {{-- @if (auth()->user()->role === 'admin')
             <a href="{{ route('admin.attendance.csv', $user->id) }}" class="csv-btn">
                 CSV出力
             </a>
-        @endif
+        @endif --}}
     </div>
 @endsection
