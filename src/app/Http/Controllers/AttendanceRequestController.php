@@ -20,14 +20,15 @@ class AttendanceRequestController extends Controller
     public function show($id)
     {
         $attendanceRequest = AttendanceRequestModel::with([
+            'attendance.user',
             'attendance.breaks',
             'items'
         ])->findOrFail($id);
 
         return view('detail', [
             'attendance' => $attendanceRequest->attendance,
-            'latestRequest' => $attendanceRequest
-
+            'latestRequest' => $attendanceRequest,
+            'isRequest' => true,
         ]);
     }
 
@@ -189,10 +190,10 @@ class AttendanceRequestController extends Controller
                             }
                         } else {
                             $newBreakStart = Carbon::parse($attendance->work_date)
-                                ->setTimeFromTimeString($breakInput['break_start']);
+                                ->setTimeFromTimeString($breakInput['break_start'])->format('Y-m-d H:i:s');
 
                             $newBreakEnd = Carbon::parse($attendance->work_date)
-                                ->setTimeFromTimeString($breakInput['break_end']);
+                                ->setTimeFromTimeString($breakInput['break_end'])->format('Y-m-d H:i:s');
 
                             $attendanceRequest->items()->create([
                                 'type' => 'new_break',
@@ -209,28 +210,28 @@ class AttendanceRequestController extends Controller
                         throw new \Exception('変更内容なし');
                     }
 
-                    if ($isAdmin) {
-                        foreach ($attendanceRequest->items as $item) {
+                }
+                if ($isAdmin) {
+                    foreach ($attendanceRequest->items as $item) {
 
-                            if ($item->type === 'clock_in') {
-                                Attendance::where('id', $item->target_id)
-                                    ->update(['clock_in' => $item->after_time]);
-                            }
+                        if ($item->type === 'clock_in') {
+                            Attendance::where('id', $item->target_id)
+                                ->update(['clock_in' => $item->after_time]);
+                        }
 
-                            if ($item->type === 'clock_out') {
-                                Attendance::where('id', $item->target_id)
-                                    ->update(['clock_out' => $item->after_time]);
-                            }
+                        if ($item->type === 'clock_out') {
+                            Attendance::where('id', $item->target_id)
+                                ->update(['clock_out' => $item->after_time]);
+                        }
 
-                            if ($item->type === 'break_start') {
-                                BreakTime::where('id', $item->target_id)
-                                    ->update(['break_start' => $item->after_time]);
-                            }
+                        if ($item->type === 'break_start') {
+                            BreakTime::where('id', $item->target_id)
+                                ->update(['break_start' => $item->after_time]);
+                        }
 
-                            if ($item->type === 'break_end') {
-                                BreakTime::where('id', $item->target_id)
-                                    ->update(['break_end' => $item->after_time]);
-                            }
+                        if ($item->type === 'break_end') {
+                            BreakTime::where('id', $item->target_id)
+                                ->update(['break_end' => $item->after_time]);
                         }
                     }
                 }

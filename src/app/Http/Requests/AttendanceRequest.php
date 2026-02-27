@@ -26,12 +26,10 @@ class AttendanceRequest extends FormRequest
         return [
             'clock_in' => ['nullable', 'date_format:H:i'],
             'clock_out' => ['nullable', 'date_format:H:i'],
-            // 'break_start' => ['nullable', 'date_format:H:i'],
-            // 'break_end' => ['nullable', 'date_format:H:i'],
             'breaks' => ['nullable', 'array'],
-            'breaks.*.id' => ['required', 'integer'],
-            'breaks.*.break_start' => ['nullable', 'date_format:H:i'],
-            'breaks.*.break_end' => ['nullable', 'date_format:H:i'],
+            'breaks.*.id' => ['nullable', 'exists:breaks,id'],
+            'breaks.*.break_start' => ['nullable', 'required_with:break_end', 'date_format:H:i'],
+            'breaks.*.break_end' => ['nullable', 'required_with:break_start', 'date_format:H:i'],
             'reason' => ['required', 'string'],
         ];
     }

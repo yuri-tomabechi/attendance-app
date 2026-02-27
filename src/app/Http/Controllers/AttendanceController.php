@@ -139,7 +139,8 @@ class AttendanceController extends Controller
 
         return view('detail', [
             'attendance' => $attendance,
-            'latestRequest' => $latestRequest
+            'latestRequest' => $latestRequest,
+            'isRequest' => false,
         ]);
     }
 }

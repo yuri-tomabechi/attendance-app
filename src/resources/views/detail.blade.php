@@ -119,7 +119,6 @@
                                 ～
                                 {{ \Carbon\Carbon::parse($data['break_end'])->format('H:i') }}
                             @else
-                                
                             @endif
                         </span>
                     @endif
@@ -144,28 +143,37 @@
                     </div>
                 @endif
             </div>
-            @if (!$latestRequest)
-                <form method="POST" action="{{ route('admin.attendance.update', $attendance->id) }}">
-                    @csrf
-
+            @if ($isRequest)
+                {{-- 申請詳細画面 --}}
+                @if ($latestRequest->status === 'pending')
+                    <form method="POST" action="{{ route('attendance_requests.approve', $latestRequest->id) }}">
+                        @csrf
+                        <div class="detail-button">
+                            <button type="submit" class="approve-btn">
+                                承認する
+                            </button>
+                        </div>
+                    </form>
+                @else
                     <div class="detail-button">
-                        <button type="submit">修正</button>
+                        <span class="approved-message">承認済み</span>
                     </div>
-                </form>
-            @elseif ($latestRequest->status === 'pending')
-                {{-- ユーザー申請あり --}}
-                <form method="POST" action="{{ route('attendance_requests.approve', $latestRequest->id) }}">
-                    @csrf
+                @endif
+            @else
+                @if ($latestRequest && $latestRequest->status === 'pending')
                     <div class="detail-button">
-                        <button type="submit" class="approve-btn">
-                            承認する
-                        </button>
+                        <span class="pending-message">
+                            ※承認待ちのため修正はできません。
+                        </span>
                     </div>
-                </form>
-            @elseif ($latestRequest->status === 'approved')
-                <div class="detail-button">
-                    <span class="approved-message">承認済み</span>
-                </div>
+                @else
+                    <form method="POST" action="{{ route('admin.attendance.update', $attendance->id) }}">
+                        @csrf
+                        <div class="detail-button">
+                            <button type="submit">修正</button>
+                        </div>
+                    </form>
+                @endif
             @endif
 
 
@@ -232,6 +240,23 @@
                             @endif
                         </div>
                     @endforeach
+                    @php
+                        $nextIndex = $attendance->breaks->count();
+                    @endphp
+
+                    <div class="detail-row">
+                        <span class="label">休憩{{ $nextIndex + 1 }}</span>
+
+                        @if (!$latestRequest)
+                            <input type="time" name="breaks[{{ $nextIndex }}][break_start]"
+                                value="{{ old("breaks.$nextIndex.break_start") }}">
+
+                            ～
+
+                            <input type="time" name="breaks[{{ $nextIndex }}][break_end]"
+                                value="{{ old("breaks.$nextIndex.break_end") }}">
+                        @endif
+                    </div>
 
                     <div class="detail-row">
                         <span class="label">備考</span>

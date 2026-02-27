@@ -17,9 +17,9 @@ class CreateAttendanceRequestItemsTable extends Migration
             $table->id();
             $table->foreignId('attendance_request_id')->constrained()->cascadeOnDelete();
             $table->string('type');
-            $table->unsignedBigInteger('target_id')->nullable;
-            $table->timestamp('before_time')->nullable;
-            $table->timestamp('after_time')->nullable;
+            $table->unsignedBigInteger('target_id')->nullable();
+            $table->text('before_time')->nullable();
+            $table->text('after_time')->nullable();
             $table->timestamps();
         });
     }
