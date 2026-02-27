@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Attendance;
-
+use App\Http\Requests\AttendanceRequest;
+use App\Models\AttendanceRequest as AttendanceRequestModel;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -59,5 +60,56 @@ class AttendanceController extends Controller
             'end',
             'attendances'
         ));
+    }
+
+    public function update(AttendanceRequest $request, $id)
+    {
+        $request->validate([
+            'clock_in'  => 'required',
+            'clock_out' => 'required',
+            'reason'    => 'required|string|max:255',
+        ]);
+        $attendance = Attendance::findOrFail($id);
+
+        $attendance->update([
+            'clock_in'  => $request->clock_in,
+            'clock_out' => $request->clock_out,
+        ]);
+
+        $latestRequest = AttendanceRequestModel::where('attendance_id', $attendance->id)
+            ->latest()
+            ->first();
+
+        if ($latestRequest) {
+            $latestRequest->update([
+                'status' => 'approved',
+                'reason' => $request->reason,
+            ]);
+        } else {
+            AttendanceRequestModel::create([
+                'attendance_id' => $attendance->id,
+                'user_id'       => $attendance->user_id,
+                'status'        => 'approved',
+                'reason'        => $request->reason,
+            ]);
+        }
+
+        if ($request->breaks) {
+            foreach ($request->breaks as $breakData) {
+                $break = $attendance->breaks()
+                    ->where('id', $breakData['id'])
+                    ->first();
+
+                if ($break) {
+                    $break->update([
+                        'break_start' => $breakData['break_start'],
+                        'break_end'   => $breakData['break_end'],
+                    ]);
+                }
+            }
+        }
+
+
+        return back()->with('success', '修正済み');
     }
 }

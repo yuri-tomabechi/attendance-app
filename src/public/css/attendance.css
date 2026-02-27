@@ -197,14 +197,15 @@ input[type="time"] {
 }
 
 .detail-button {
-    text-align: right;
-    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
 }
 
 .detail-button button {
     background: #000;
     color: #fff;
-    padding: 10px 30px;
+    padding: 8px 15px;
     border: none;
     border-radius: 5px;
 }
@@ -213,4 +214,14 @@ input[type="time"] {
 .pending-message {
     color: red;
     margin-top: 20px;
+    text-align: right;
+}
+
+.approved-message{
+    background: #696969;
+    color: #fff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    display: inline-block;
 }

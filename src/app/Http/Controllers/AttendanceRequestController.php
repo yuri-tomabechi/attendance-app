@@ -26,15 +26,17 @@ class AttendanceRequestController extends Controller
 
         return view('detail', [
             'attendance' => $attendanceRequest->attendance,
-            'pendingRequest' => $attendanceRequest ?? null
+            'latestRequest' => $attendanceRequest
 
         ]);
     }
 
     public function store(AttendanceRequest $request)
     {
+        $isAdmin = auth()->user()->role === 'admin';
+
         DB::transaction(
-            function () use ($request) {
+            function () use ($request, $isAdmin) {
 
                 $attendance = Attendance::findOrFail($request->attendance_id);
 
@@ -87,11 +89,13 @@ class AttendanceRequestController extends Controller
                 }
 
 
+                $isAdmin = auth()->user()->role === 'admin';
+
                 $attendanceRequest = AttendanceRequestModel::create([
                     'attendance_id' => $attendance->id,
                     'user_id' => auth()->id(),
                     'reason' => $request->reason,
-                    'status' => 'pending',
+                    'status' => $isAdmin ? 'approved' : 'pending',
                 ]);
 
                 if ($request->clock_in) {
@@ -173,9 +177,34 @@ class AttendanceRequestController extends Controller
                 if ($attendanceRequest->items()->count() === 0) {
                     throw new \Exception('変更内容なし');
                 }
-            }
-        );
+
+                if ($isAdmin) {
+                    foreach ($attendanceRequest->items as $item) {
+
+                        if ($item->type === 'clock_in') {
+                            Attendance::where('id', $item->target_id)
+                                ->update(['clock_in' => $item->after_time]);
+                        }
+
+                        if ($item->type === 'clock_out') {
+                            Attendance::where('id', $item->target_id)
+                                ->update(['clock_out' => $item->after_time]);
+                        }
+
+                        if ($item->type === 'break_start') {
+                            BreakTime::where('id', $item->target_id)
+                                ->update(['break_start' => $item->after_time]);
+                        }
+
+                        if ($item->type === 'break_end') {
+                            BreakTime::where('id', $item->target_id)
+                                ->update(['break_end' => $item->after_time]);
+                        }
+                    }
+                }
+            });
         return back();
+
     }
 
     public function index(Request $request)
@@ -188,11 +217,19 @@ class AttendanceRequestController extends Controller
             $query->where('status', 'pending');
         }
 
+        if (auth()->user()->role !== 'admin') {
+            $query->where('user_id', auth()->id());
+        }
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
         $requests = $query->latest()->get();
 
         return view('requests.index', compact('requests'));
     }
-    
+
 
     public function approve($id)
     {

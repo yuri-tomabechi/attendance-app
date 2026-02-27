@@ -20,7 +20,7 @@
                     <ul>
                         <li class="all_attendance"><a href="{{ route('admin.attendance.index') }}">勤怠一覧</a></li>
                         <li class="all_staff"><a href="{{ route('admin.staff.list') }}">スタッフ一覧</a></li>
-                        <li><a href="{{ route('attendance_requests.index') }}">申請一覧</a></li>
+                        <li><a href="{{ route('admin.attendance_requests.index') }}">申請一覧</a></li>
                         <li class="logout__button"><a href="/mylogout">ログアウト</a></li>
                     </ul>
                 </nav>

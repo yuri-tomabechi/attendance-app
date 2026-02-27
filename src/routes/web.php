@@ -35,6 +35,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/staff', [AdminAttendanceController::class, 'staff'])
         ->name('admin.staff.list');
+
+    Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'index'])
+        ->name('admin.attendance_requests.index');
 });
 
 
@@ -96,6 +99,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/attendance_requests/{id}/approve',
     [AttendanceRequestController::class, 'approve'])
         ->name('attendance_requests.approve');
+
+    Route::post('/admin/attendance/update/{id}', [AdminAttendanceController::class, 'update'])
+        ->name('admin.attendance.update');
 
     // Route::get('/stamp_correction_request/{id}', [AttendanceRequestController::class, 'show'])
     //     ->name('attendance_requests.show');

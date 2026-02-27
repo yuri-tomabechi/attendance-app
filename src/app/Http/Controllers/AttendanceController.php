@@ -126,8 +126,8 @@ class AttendanceController extends Controller
         $attendance = Attendance::with(['breaks', 'user', 'requests'])
             ->findOrFail($id);
 
-        $pendingRequest = $attendance->requests()
-            ->where('status', 'pending')
+        $latestRequest = $attendance->requests()
+            ->latest()
             ->first();
 
         if (
@@ -137,6 +137,9 @@ class AttendanceController extends Controller
             abort(403);
         }
 
-        return view('detail', compact('attendance', 'pendingRequest'));
+        return view('detail', [
+            'attendance' => $attendance,
+            'latestRequest' => $latestRequest
+        ]);
     }
 }
