@@ -38,6 +38,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'index'])
         ->name('admin.attendance_requests.index');
+
+    Route::get('/attendance/{user}/csv', [AdminAttendanceController::class, 'exportCsv'])
+        ->name('admin.attendance.csv');
 });
 
 

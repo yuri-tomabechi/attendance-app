@@ -225,3 +225,16 @@ input[type="time"] {
     border-radius: 5px;
     display: inline-block;
 }
+
+.csv-btn {
+    background-color: black;
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+}
+
+.csv{
+    text-align: right;
+    margin-top: 20px;
+}

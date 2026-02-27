@@ -93,6 +93,37 @@
                         @endif
                     </div>
                 @endforeach
+                @php
+                    $nextIndex = $attendance->breaks->count();
+                    $newBreakItem = null;
+
+                    if ($latestRequest) {
+                        $newBreakItem = $latestRequest->items->where('type', 'new_break')->first();
+                    }
+                @endphp
+
+                <div class="detail-row">
+                    <span class="label">休憩{{ $nextIndex + 1 }}</span>
+                    @if (!$latestRequest)
+                        <input type="time" name="breaks[{{ $nextIndex }}][break_start]">
+                        ～
+                        <input type="time" name="breaks[{{ $nextIndex }}][break_end]">
+                    @else
+                        <span class="readonly">
+                            @if ($newBreakItem)
+                                @php
+                                    $data = json_decode($newBreakItem->after_time, true);
+                                @endphp
+
+                                {{ \Carbon\Carbon::parse($data['break_start'])->format('H:i') }}
+                                ～
+                                {{ \Carbon\Carbon::parse($data['break_end'])->format('H:i') }}
+                            @else
+                                
+                            @endif
+                        </span>
+                    @endif
+                </div>
 
                 <div class="detail-row">
                     <span class="label">備考</span>

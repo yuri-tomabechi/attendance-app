@@ -9,6 +9,7 @@ use App\Http\Requests\AttendanceRequest;
 use App\Models\AttendanceRequest as AttendanceRequestModel;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendanceController extends Controller
 {
@@ -111,5 +112,66 @@ class AttendanceController extends Controller
 
 
         return back()->with('success', '修正済み');
+    }
+
+    public function exportCsv(Request $request, User $user)
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        $month = $request->get('month', now()->format('Y-m'));
+
+        $start = \Carbon\Carbon::parse($month)->startOfMonth();
+        $end   = \Carbon\Carbon::parse($month)->endOfMonth();
+
+        $attendances = Attendance::with('breaks')
+            ->where('user_id', $user->id)
+            ->whereBetween('work_date', [$start, $end])
+            ->get();
+
+        $fileName = '勤怠一覧_' . $month . '_' . $user->name;
+
+        return response()->streamDownload(function () use ($attendances) {
+
+            $handle = fopen('php://output', 'w');
+
+            fputcsv($handle, [
+                '日付',
+                '出勤時間',
+                '退勤時間',
+                '勤務時間',
+                '休憩時間'
+            ]);
+
+            foreach ($attendances as $attendance) {
+
+                $totalBreakMinutes = 0;
+
+                foreach ($attendance->breaks as $break) {
+                    if ($break->break_start && $break->break_end) {
+                        $totalBreakMinutes +=
+                            \Carbon\Carbon::parse($break->break_start)
+                            ->diffInMinutes($break->break_end);
+                    }
+                }
+
+                $breakHours = floor($totalBreakMinutes / 60);
+                $breakMinutes = $totalBreakMinutes % 60;
+
+                $formattedBreak = sprintf('%02d:%02d', $breakHours, $breakMinutes);
+
+                fputcsv($handle, [
+                    \Carbon\Carbon::parse($attendance->work_date)->format('Y-m-d'),
+                    $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '',
+                    $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '',
+                    $attendance->formatted_work_time ?? '',
+                    $formattedBreak
+                ]);
+            }
+
+
+            fclose($handle);
+        }, $fileName . '.csv');
     }
 }

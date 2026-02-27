@@ -61,19 +61,31 @@ class AttendanceRequestController extends Controller
                 // 休憩チェック
                 foreach ($request->breaks ?? [] as $breakInput) {
 
-                    $break = BreakTime::findOrFail($breakInput['id']);
+                    if (empty($breakInput['break_start']) && empty($breakInput['break_end'])) {
+                        continue;
+                    }
 
-                    $finalBreakStart = $breakInput['break_start']
-                        ? Carbon::parse($attendance->work_date)
-                        ->setTimeFromTimeString($breakInput['break_start'])
-                        ->format('Y-m-d H:i:s')
-                        : $break->break_start;
+                    if (!empty($breakInput['id'])) {
+                        $break = BreakTime::findOrFail($breakInput['id']);
 
-                    $finalBreakEnd = $breakInput['break_end']
-                        ? Carbon::parse($attendance->work_date)
-                        ->setTimeFromTimeString($breakInput['break_end'])
-                        ->format('Y-m-d H:i:s')
-                        : $break->break_end;
+                        $finalBreakStart = $breakInput['break_start']
+                            ? Carbon::parse($attendance->work_date)
+                            ->setTimeFromTimeString($breakInput['break_start'])
+                            ->format('Y-m-d H:i:s')
+                            : $break->break_start;
+
+                        $finalBreakEnd = $breakInput['break_end']
+                            ? Carbon::parse($attendance->work_date)
+                            ->setTimeFromTimeString($breakInput['break_end'])
+                            ->format('Y-m-d H:i:s')
+                            : $break->break_end;
+                    } else {
+                        $finalBreakStart = Carbon::parse($attendance->work_date)
+                            ->setTimeFromTimeString($breakInput['break_start']);
+
+                        $finalBreakEnd = Carbon::parse($attendance->work_date)
+                            ->setTimeFromTimeString($breakInput['break_end']);
+                    }
 
                     if (
                         $finalBreakStart < $finalClockIn ||
@@ -134,77 +146,97 @@ class AttendanceRequestController extends Controller
 
                 if ($request->breaks) {
                     foreach ($request->breaks as $breakInput) {
-
-                        $break = BreakTime::findOrFail($breakInput['id']);
-
-                        // 休憩開始
-                        if ($breakInput['break_start']) {
-
-                            $newBreakStart = Carbon::parse($attendance->work_date)
-                                ->setTimeFromTimeString($breakInput['break_start'])
-                                ->format('Y-m-d H:i:s');
-
-
-                            if ($break->break_start != $newBreakStart) {
-                                $attendanceRequest->items()->create([
-                                    'type'        => 'break_start',
-                                    'target_id'   => $break->id,
-                                    'before_time' => $break->break_start,
-                                    'after_time'  => $newBreakStart,
-                                ]);
-                            }
+                        if (empty($breakInput['break_start']) && empty($breakInput['break_end'])) {
+                            continue;
                         }
 
-                        // 休憩終了
-                        if ($breakInput['break_end']) {
+                        if (!empty($breakInput['id'])) {
+                            $break = BreakTime::findOrFail($breakInput['id']);
+
+                            // 休憩開始
+                            if ($breakInput['break_start']) {
+
+                                $newBreakStart = Carbon::parse($attendance->work_date)
+                                    ->setTimeFromTimeString($breakInput['break_start'])
+                                    ->format('Y-m-d H:i:s');
+
+
+                                if ($break->break_start != $newBreakStart) {
+                                    $attendanceRequest->items()->create([
+                                        'type'        => 'break_start',
+                                        'target_id'   => $break->id,
+                                        'before_time' => $break->break_start,
+                                        'after_time'  => $newBreakStart,
+                                    ]);
+                                }
+                            }
+
+                            // 休憩終了
+                            if ($breakInput['break_end']) {
+
+                                $newBreakEnd = Carbon::parse($attendance->work_date)
+                                    ->setTimeFromTimeString($breakInput['break_end'])
+                                    ->format('Y-m-d H:i:s');
+
+                                if ($break->break_end != $newBreakEnd) {
+                                    $attendanceRequest->items()->create([
+                                        'type'        => 'break_end',
+                                        'target_id'   => $break->id,
+                                        'before_time' => $break->break_end,
+                                        'after_time'  => $newBreakEnd,
+                                    ]);
+                                }
+                            }
+                        } else {
+                            $newBreakStart = Carbon::parse($attendance->work_date)
+                                ->setTimeFromTimeString($breakInput['break_start']);
 
                             $newBreakEnd = Carbon::parse($attendance->work_date)
-                                ->setTimeFromTimeString($breakInput['break_end'])
-                                ->format('Y-m-d H:i:s');
+                                ->setTimeFromTimeString($breakInput['break_end']);
 
-                            if ($break->break_end != $newBreakEnd) {
-                                $attendanceRequest->items()->create([
-                                    'type'        => 'break_end',
-                                    'target_id'   => $break->id,
-                                    'before_time' => $break->break_end,
-                                    'after_time'  => $newBreakEnd,
-                                ]);
+                            $attendanceRequest->items()->create([
+                                'type' => 'new_break',
+                                'target_id' => null,
+                                'before_time' => null,
+                                'after_time' => json_encode([
+                                    'break_start' => $newBreakStart,
+                                    'break_end' => $newBreakEnd
+                                ]),
+                            ]);
+                        }
+                    }
+                    if ($attendanceRequest->items()->count() === 0) {
+                        throw new \Exception('変更内容なし');
+                    }
+
+                    if ($isAdmin) {
+                        foreach ($attendanceRequest->items as $item) {
+
+                            if ($item->type === 'clock_in') {
+                                Attendance::where('id', $item->target_id)
+                                    ->update(['clock_in' => $item->after_time]);
+                            }
+
+                            if ($item->type === 'clock_out') {
+                                Attendance::where('id', $item->target_id)
+                                    ->update(['clock_out' => $item->after_time]);
+                            }
+
+                            if ($item->type === 'break_start') {
+                                BreakTime::where('id', $item->target_id)
+                                    ->update(['break_start' => $item->after_time]);
+                            }
+
+                            if ($item->type === 'break_end') {
+                                BreakTime::where('id', $item->target_id)
+                                    ->update(['break_end' => $item->after_time]);
                             }
                         }
                     }
-
                 }
-                if ($attendanceRequest->items()->count() === 0) {
-                    throw new \Exception('変更内容なし');
-                }
-
-                if ($isAdmin) {
-                    foreach ($attendanceRequest->items as $item) {
-
-                        if ($item->type === 'clock_in') {
-                            Attendance::where('id', $item->target_id)
-                                ->update(['clock_in' => $item->after_time]);
-                        }
-
-                        if ($item->type === 'clock_out') {
-                            Attendance::where('id', $item->target_id)
-                                ->update(['clock_out' => $item->after_time]);
-                        }
-
-                        if ($item->type === 'break_start') {
-                            BreakTime::where('id', $item->target_id)
-                                ->update(['break_start' => $item->after_time]);
-                        }
-
-                        if ($item->type === 'break_end') {
-                            BreakTime::where('id', $item->target_id)
-                                ->update(['break_end' => $item->after_time]);
-                        }
-                    }
-                }
-            });
+            }
+        );
         return back();
-
     }
 
     public function index(Request $request)
@@ -257,6 +289,17 @@ class AttendanceRequestController extends Controller
                 if ($item->type === 'break_end') {
                     BreakTime::where('id', $item->target_id)
                         ->update(['break_end' => $item->after_time]);
+                }
+
+                if ($item->type === 'new_break') {
+
+                    $data = json_decode($item->after_time, true);
+
+                    BreakTime::create([
+                        'attendance_id' => $attendanceRequest->attendance_id,
+                        'break_start'   => $data['break_start'],
+                        'break_end'     => $data['break_end'],
+                    ]);
                 }
             }
 

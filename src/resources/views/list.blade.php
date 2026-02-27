@@ -19,7 +19,8 @@
 
 
         <div class="month-nav">
-            <a href="{{ $isAdmin
+            <a
+                href="{{ $isAdmin
                     ? route('admin.attendance.list', [
                         'userId' => $user->id,
                         'month' => \Carbon\Carbon::parse($month)->subMonth()->format('Y-m'),
@@ -74,7 +75,6 @@
                             @if ($attendance)
                                 {{ $attendance->formatted_break_time ?? '00:00' }}
                             @else
-                                
                             @endif
                         </td>
 
@@ -82,7 +82,6 @@
                             @if ($attendance && $attendance->clock_out)
                                 {{ $attendance->formatted_work_time ?? '00:00' }}
                             @else
-                                
                             @endif
                         </td>
 
@@ -90,17 +89,18 @@
                             @if ($attendance)
                                 <a href="{{ route('attendance.show', $attendance->id) }}">詳細</a>
                             @else
-                                
                             @endif
                         </td>
                     </tr>
                 @endfor
             </tbody>
         </table>
-        {{-- @if (auth()->user()->role === 'admin')
-            <a href="{{ route('admin.attendance.csv', $user->id) }}" class="csv-btn">
-                CSV出力
-            </a>
-        @endif --}}
+        @if (auth()->user()->role === 'admin')
+            <div class="csv">
+                <a href="{{ route('admin.attendance.csv', $user->id) }}" class="csv-btn">
+                    CSV出力
+                </a>
+            </div>
+        @endif
     </div>
 @endsection

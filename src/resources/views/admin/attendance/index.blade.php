@@ -29,7 +29,13 @@
             @foreach ($users as $user)
                 @php
                     $attendance = $attendances[$user->id] ?? null;
+                @endphp
 
+                @if (!$attendance)
+                    @continue
+                @endif
+
+                @php
                     $clockIn = $attendance?->clock_in;
                     $clockOut = $attendance?->clock_out;
 
