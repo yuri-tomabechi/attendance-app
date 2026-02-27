@@ -66,15 +66,15 @@
                     <tr>
                         <td>{{ $date->isoFormat('MM/DD(ddd)') }}</td>
 
-                        <td>{{ optional($attendance)->clock_in?->format('H:i') ?? '-' }}</td>
+                        <td>{{ optional($attendance)->clock_in?->format('H:i') ?? ' ' }}</td>
 
-                        <td>{{ optional($attendance)->clock_out?->format('H:i') ?? '-' }}</td>
+                        <td>{{ optional($attendance)->clock_out?->format('H:i') ?? ' ' }}</td>
 
                         <td>
                             @if ($attendance)
                                 {{ $attendance->formatted_break_time ?? '00:00' }}
                             @else
-                                -
+                                
                             @endif
                         </td>
 
@@ -82,7 +82,7 @@
                             @if ($attendance && $attendance->clock_out)
                                 {{ $attendance->formatted_work_time ?? '00:00' }}
                             @else
-                                -
+                                
                             @endif
                         </td>
 
@@ -90,7 +90,7 @@
                             @if ($attendance)
                                 <a href="{{ route('attendance.show', $attendance->id) }}">詳細</a>
                             @else
-                                -
+                                
                             @endif
                         </td>
                     </tr>
