@@ -3,6 +3,7 @@
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,6 +53,7 @@ Route::get('/admin/login', function () {
     return view('auth.admin-login');
 })->name('admin.login');
 
+Route::post('/admin/login', [AuthenticatedSessionController::class, 'store']);
 
 
 Route::get('/redirect', function () {

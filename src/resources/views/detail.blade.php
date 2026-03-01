@@ -120,9 +120,9 @@
                                 @php
                                     $data = json_decode($newBreakItem->after_time, true);
                                 @endphp
-                                    {{ \Carbon\Carbon::parse($data['break_start'])->format('H:i') }}
-                                    <span class="wave">～</span>
-                                    {{ \Carbon\Carbon::parse($data['break_end'])->format('H:i') }}
+                                {{ \Carbon\Carbon::parse($data['break_start'])->format('H:i') }}
+                                <span class="wave">～</span>
+                                {{ \Carbon\Carbon::parse($data['break_end'])->format('H:i') }}
                             @else
                             @endif
                         </span>
@@ -200,22 +200,22 @@
                     <div class="detail-row">
                         <span class="label">日付</span>
                         <div class="value flex">
-                        <span>{{ $attendance->work_date->format('Y年') }}</span>
-                        <span>{{ $attendance->work_date->format('n月j日') }}</span>
-                    </div>
+                            <span>{{ $attendance->work_date->format('Y年') }}</span>
+                            <span>{{ $attendance->work_date->format('n月j日') }}</span>
+                        </div>
                     </div>
 
                     <div class="detail-row">
                         <span class="label">出勤・退勤</span>
 
                         @if (!$latestRequest)
-                        <div class="flex">
-                            <input type="time" name="clock_in"
-                                value="{{ old('clock_in', optional($attendance->clock_in)->format('H:i')) }}">
-                            <div class="wave">～</div>
-                            <input type="time" name="clock_out"
-                                value="{{ old('clock_out', optional($attendance->clock_out)->format('H:i')) }}">
-                                </div>
+                            <div class="flex">
+                                <input type="time" name="clock_in"
+                                    value="{{ old('clock_in', optional($attendance->clock_in)->format('H:i')) }}">
+                                <div class="wave">～</div>
+                                <input type="time" name="clock_out"
+                                    value="{{ old('clock_out', optional($attendance->clock_out)->format('H:i')) }}">
+                            </div>
                         @else
                             @php
                                 $pendingClockIn = $latestRequest?->items->where('type', 'clock_in')->first();
@@ -241,16 +241,17 @@
                             <span class="label">休憩{{ $index + 1 }}</span>
 
                             @if (!$latestRequest)
-                            <div class="flex">
-                                <input type="time" name="breaks[{{ $index }}][break_start]"
-                                    value="{{ old("breaks.$index.break_start", optional($break->break_start)->format('H:i')) }}">
+                                <div class="flex">
+                                    <input type="time" name="breaks[{{ $index }}][break_start]"
+                                        value="{{ old("breaks.$index.break_start", optional($break->break_start)->format('H:i')) }}">
 
-                                <div class="wave">～</div>
+                                    <div class="wave">～</div>
 
-                                <input type="time" name="breaks[{{ $index }}][break_end]"
-                                    value="{{ old("breaks.$index.break_end", optional($break->break_end)->format('H:i')) }}">
+                                    <input type="time" name="breaks[{{ $index }}][break_end]"
+                                        value="{{ old("breaks.$index.break_end", optional($break->break_end)->format('H:i')) }}">
 
-                                <input type="hidden" name="breaks[{{ $index }}][id]" value="{{ $break->id }}">
+                                    <input type="hidden" name="breaks[{{ $index }}][id]"
+                                        value="{{ $break->id }}">
                                 </div>
                             @else
                                 @php
@@ -288,10 +289,10 @@
                         <span class="label">休憩{{ $nextIndex + 1 }}</span>
 
                         @if (!$latestRequest)
-                        <div class="flex">
-                            <input type="time" name="breaks[{{ $nextIndex }}][break_start]">
-                            <div class="wave">～</div>
-                            <input type="time" name="breaks[{{ $nextIndex }}][break_end]">
+                            <div class="flex">
+                                <input type="time" name="breaks[{{ $nextIndex }}][break_start]">
+                                <div class="wave">～</div>
+                                <input type="time" name="breaks[{{ $nextIndex }}][break_end]">
                             </div>
                         @else
                             <span class="readonly flex">
