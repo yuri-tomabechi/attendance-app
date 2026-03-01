@@ -110,7 +110,6 @@ button{
     display: flex;
 }
 
-/* テーブル */
 .list-table {
     width: 100%;
     border-collapse: collapse;
@@ -158,9 +157,9 @@ input[type="time"] {
     padding: 5px 10px;
 }
 
-.wave{
+/* .wave{
     padding: 0 5px;
-}
+} */
 .detail-title {
     font-size: 24px;
     margin-bottom: 30px;
@@ -180,17 +179,23 @@ input[type="time"] {
 }
 
 .label {
-    width: 150px;
+    width: 35%;
     font-weight: bold;
     color: #555;
 }
 
-.value {
-    flex: 1;
+.flex{
+    display: flex;
+    justify-content: space-between;
+    width: 40%;
+    margin-left: 0;
+}
+.value{
+    width: 40%;
 }
 
 .remark {
-    width: 100%;
+    width: 40%;
     height: 80px;
     resize: none;
     padding: 10px;

@@ -9,7 +9,7 @@
         <h1 class="detail-title">勤怠詳細</h1>
 
         {{-- ============================= --}}
-        {{-- 🔵 管理者画面 --}}
+        {{-- 管理者画面 --}}
         {{-- ============================= --}}
         @if (auth()->user()->role === 'admin')
 
@@ -22,26 +22,30 @@
 
                 <div class="detail-row">
                     <span class="label">日付</span>
-                    <span class="value">
-                        {{ $attendance->work_date->format('Y年 n月j日') }}
-                    </span>
+                    <div class="value flex">
+                        <span>{{ $attendance->work_date->format('Y年') }}</span>
+                        <span>{{ $attendance->work_date->format('n月j日') }}</span>
+                    </div>
                 </div>
 
                 <div class="detail-row">
                     <span class="label">出勤・退勤</span>
                     @if (!$latestRequest)
                         {{-- 申請なし → 管理者が直接修正 --}}
-                        <input type="time" name="clock_in" value="{{ optional($attendance->clock_in)->format('H:i') }}">
-                        ～
-                        <input type="time" name="clock_out"
-                            value="{{ optional($attendance->clock_out)->format('H:i') }}">
+                        <div class="flex">
+                            <input type="time" name="clock_in"
+                                value="{{ optional($attendance->clock_in)->format('H:i') }}">
+                            <span class="wave">～</span>
+                            <input type="time" name="clock_out"
+                                value="{{ optional($attendance->clock_out)->format('H:i') }}">
+                        </div>
                     @else
-                        <span class="readonly">
+                        <span class="readonly flex">
                             {{ $latestRequest && $latestRequest->items->where('type', 'clock_in')->first()
                                 ? \Carbon\Carbon::parse($latestRequest->items->where('type', 'clock_in')->first()->after_time)->format('H:i')
                                 : optional($attendance->clock_in)->format('H:i') }}
 
-                            ～
+                            <span class="wave">～</span>
 
                             {{ $latestRequest && $latestRequest->items->where('type', 'clock_out')->first()
                                 ? \Carbon\Carbon::parse($latestRequest->items->where('type', 'clock_out')->first()->after_time)->format('H:i')
@@ -68,24 +72,24 @@
 
                         @if (!$latestRequest)
                             {{-- 申請なし → 管理者が直接修正 --}}
-                            <input type="time" name="breaks[{{ $index }}][break_start]"
-                                value="{{ optional($break->break_start)->format('H:i') }}">
+                            <div class="flex">
+                                <input type="time" name="breaks[{{ $index }}][break_start]"
+                                    value="{{ optional($break->break_start)->format('H:i') }}">
 
-                            ～
+                                <span class="wave">～</span>
 
-                            <input type="time" name="breaks[{{ $index }}][break_end]"
-                                value="{{ optional($break->break_end)->format('H:i') }}">
+                                <input type="time" name="breaks[{{ $index }}][break_end]"
+                                    value="{{ optional($break->break_end)->format('H:i') }}">
 
-                            <input type="hidden" name="breaks[{{ $index }}][id]" value="{{ $break->id }}">
+                                <input type="hidden" name="breaks[{{ $index }}][id]" value="{{ $break->id }}">
+                            </div>
                         @else
                             {{-- 申請あり --}}
-                            <span class="readonly">
+                            <span class="readonly flex">
                                 {{ $pendingStart
                                     ? \Carbon\Carbon::parse($pendingStart->after_time)->format('H:i')
                                     : optional($break->break_start)->format('H:i') }}
-
-                                ～
-
+                                <span class="wave">～</span>
                                 {{ $pendingEnd
                                     ? \Carbon\Carbon::parse($pendingEnd->after_time)->format('H:i')
                                     : optional($break->break_end)->format('H:i') }}
@@ -105,19 +109,20 @@
                 <div class="detail-row">
                     <span class="label">休憩{{ $nextIndex + 1 }}</span>
                     @if (!$latestRequest)
-                        <input type="time" name="breaks[{{ $nextIndex }}][break_start]">
-                        ～
-                        <input type="time" name="breaks[{{ $nextIndex }}][break_end]">
+                        <div class="flex">
+                            <input type="time" name="breaks[{{ $nextIndex }}][break_start]">
+                            <span class="wave">～</span>
+                            <input type="time" name="breaks[{{ $nextIndex }}][break_end]">
+                        </div>
                     @else
-                        <span class="readonly">
+                        <span class="readonly flex">
                             @if ($newBreakItem)
                                 @php
                                     $data = json_decode($newBreakItem->after_time, true);
                                 @endphp
-
-                                {{ \Carbon\Carbon::parse($data['break_start'])->format('H:i') }}
-                                ～
-                                {{ \Carbon\Carbon::parse($data['break_end'])->format('H:i') }}
+                                    {{ \Carbon\Carbon::parse($data['break_start'])->format('H:i') }}
+                                    <span class="wave">～</span>
+                                    {{ \Carbon\Carbon::parse($data['break_end'])->format('H:i') }}
                             @else
                             @endif
                         </span>
@@ -178,7 +183,7 @@
 
 
             {{-- ============================= --}}
-            {{-- 🟢 一般ユーザー画面 --}}
+            {{-- 一般ユーザー画面 --}}
             {{-- ============================= --}}
         @else
             <form method="POST" action="{{ route('attendance.request.store') }}">
@@ -194,25 +199,39 @@
 
                     <div class="detail-row">
                         <span class="label">日付</span>
-                        <span class="value">
-                            {{ $attendance->work_date->format('Y年 n月j日') }}
-                        </span>
+                        <div class="value flex">
+                        <span>{{ $attendance->work_date->format('Y年') }}</span>
+                        <span>{{ $attendance->work_date->format('n月j日') }}</span>
+                    </div>
                     </div>
 
                     <div class="detail-row">
                         <span class="label">出勤・退勤</span>
 
                         @if (!$latestRequest)
+                        <div class="flex">
                             <input type="time" name="clock_in"
                                 value="{{ old('clock_in', optional($attendance->clock_in)->format('H:i')) }}">
-                            ～
+                            <div class="wave">～</div>
                             <input type="time" name="clock_out"
                                 value="{{ old('clock_out', optional($attendance->clock_out)->format('H:i')) }}">
+                                </div>
                         @else
-                            <span class="readonly">
-                                {{ optional($attendance->clock_in)->format('H:i') }}
-                                ～
-                                {{ optional($attendance->clock_out)->format('H:i') }}
+                            @php
+                                $pendingClockIn = $latestRequest?->items->where('type', 'clock_in')->first();
+                                $pendingClockOut = $latestRequest?->items->where('type', 'clock_out')->first();
+                            @endphp
+
+                            <span class="readonly flex">
+                                {{ $pendingClockIn
+                                    ? \Carbon\Carbon::parse($pendingClockIn->after_time)->format('H:i')
+                                    : optional($attendance->clock_in)->format('H:i') }}
+
+                                <div class="wave">～</div>
+
+                                {{ $pendingClockOut
+                                    ? \Carbon\Carbon::parse($pendingClockOut->after_time)->format('H:i')
+                                    : optional($attendance->clock_out)->format('H:i') }}
                             </span>
                         @endif
                     </div>
@@ -222,39 +241,71 @@
                             <span class="label">休憩{{ $index + 1 }}</span>
 
                             @if (!$latestRequest)
+                            <div class="flex">
                                 <input type="time" name="breaks[{{ $index }}][break_start]"
                                     value="{{ old("breaks.$index.break_start", optional($break->break_start)->format('H:i')) }}">
 
-                                ～
+                                <div class="wave">～</div>
 
                                 <input type="time" name="breaks[{{ $index }}][break_end]"
                                     value="{{ old("breaks.$index.break_end", optional($break->break_end)->format('H:i')) }}">
 
                                 <input type="hidden" name="breaks[{{ $index }}][id]" value="{{ $break->id }}">
+                                </div>
                             @else
-                                <span class="readonly">
-                                    {{ optional($break->break_start)->format('H:i') }}
-                                    ～
-                                    {{ optional($break->break_end)->format('H:i') }}
+                                @php
+                                    $pendingStart = $latestRequest?->items
+                                        ->where('type', 'break_start')
+                                        ->where('target_id', $break->id)
+                                        ->first();
+
+                                    $pendingEnd = $latestRequest?->items
+                                        ->where('type', 'break_end')
+                                        ->where('target_id', $break->id)
+                                        ->first();
+                                @endphp
+
+                                <span class="readonly flex">
+                                    {{ $pendingStart
+                                        ? \Carbon\Carbon::parse($pendingStart->after_time)->format('H:i')
+                                        : optional($break->break_start)->format('H:i') }}
+
+                                    <div class="wave">～</div>
+
+                                    {{ $pendingEnd
+                                        ? \Carbon\Carbon::parse($pendingEnd->after_time)->format('H:i')
+                                        : optional($break->break_end)->format('H:i') }}
                                 </span>
                             @endif
                         </div>
                     @endforeach
                     @php
                         $nextIndex = $attendance->breaks->count();
+                        $newBreakItem = $latestRequest?->items->where('type', 'new_break')->first();
                     @endphp
 
                     <div class="detail-row">
                         <span class="label">休憩{{ $nextIndex + 1 }}</span>
 
                         @if (!$latestRequest)
-                            <input type="time" name="breaks[{{ $nextIndex }}][break_start]"
-                                value="{{ old("breaks.$nextIndex.break_start") }}">
+                        <div class="flex">
+                            <input type="time" name="breaks[{{ $nextIndex }}][break_start]">
+                            <div class="wave">～</div>
+                            <input type="time" name="breaks[{{ $nextIndex }}][break_end]">
+                            </div>
+                        @else
+                            <span class="readonly flex">
+                                @if ($newBreakItem)
+                                    @php
+                                        $data = json_decode($newBreakItem->after_time, true);
+                                    @endphp
 
-                            ～
-
-                            <input type="time" name="breaks[{{ $nextIndex }}][break_end]"
-                                value="{{ old("breaks.$nextIndex.break_end") }}">
+                                    {{ \Carbon\Carbon::parse($data['break_start'])->format('H:i') }}
+                                    <div class="wave">～</div>
+                                    {{ \Carbon\Carbon::parse($data['break_end'])->format('H:i') }}
+                                @else
+                                @endif
+                            </span>
                         @endif
                     </div>
 
