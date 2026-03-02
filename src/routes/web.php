@@ -109,19 +109,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/stamp_correction_request/{id}', [AttendanceRequestController::class, 'show'])
         ->name('attendance_requests.show');
-
-    // Route::post(
-    //     '/attendance_requests/{id}/approve',
-    //     [AttendanceRequestController::class, 'approve']
-    // )
-    //     ->name('attendance_requests.approve');
-
-
-    // Route::get('/stamp_correction_request/{id}', [AttendanceRequestController::class, 'show'])
-    //     ->name('attendance_requests.show');
 });
 
-// Route::get('/attendance/detail', [AttendanceRequestController::class, 'show']);
 
 Route::get(
     '/mylogout',
