@@ -1,4 +1,4 @@
-/* 全体 */
+
 .request-inner {
     max-width: 800px;
     margin: 60px auto;
@@ -13,7 +13,7 @@
     padding-left: 10px;
 }
 
-/* タブ */
+
 .tab-area {
     display: flex;
     gap: 30px;
@@ -80,7 +80,6 @@
     opacity: 0.6;
 }
 
-/* 申請理由は長い可能性 */
 .reason {
     max-width: 250px;
     white-space: nowrap;

@@ -94,14 +94,29 @@ class AttendanceController extends Controller
 
         if ($request->breaks) {
             foreach ($request->breaks as $breakData) {
-                $break = $attendance->breaks()
-                    ->where('id', $breakData['id'])
-                    ->first();
 
-                if ($break) {
-                    $break->update([
-                        'break_start' => $breakData['break_start'],
-                        'break_end'   => $breakData['break_end'],
+                if (!empty($breakData['id'])) {
+                    $break = $attendance->breaks()
+                        ->where('id', $breakData['id'])
+                        ->first();
+
+                    if ($break) {
+                        $break->update([
+                            'break_start' => $breakData['break_start'] ?? null,
+                            'break_end'   => $breakData['break_end'] ?? null,
+                        ]);
+                    }
+
+                    continue;
+                }
+
+                $start = $breakData['break_start'] ?? null;
+                $end   = $breakData['break_end'] ?? null;
+
+                if ($start && $end) {
+                    $attendance->breaks()->create([
+                        'break_start' => $start,
+                        'break_end'   => $end,
                     ]);
                 }
             }

@@ -38,22 +38,6 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.login');
         });
 
-        // Fortify::authenticateUsing(function (Request $request) {
-
-        //     $user = User::where('email', $request->email)->first();
-
-        //     if (
-        //         $user &&
-        //         Hash::check($request->password, $user->password) &&
-        //         $user->role === 'admin'
-        //     ) {
-        //         return $user;
-        //     }
-
-        //     throw ValidationException::withMessages([
-        //         'email' => 'ログイン情報が登録されていません',
-        //     ]);
-        // });
 
         // 独自の登録処理クラスを指定
         Fortify::createUsersUsing(CreateNewUser::class);

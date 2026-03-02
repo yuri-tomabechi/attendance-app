@@ -114,7 +114,7 @@
                         @csrf
                         <div class="detail-button">
                             <button type="submit" class="approve-btn">
-                                承認する
+                                承認
                             </button>
                         </div>
                     </form>
@@ -363,7 +363,6 @@
 
                 @endif
             @endif
-            {{-- </div> --}}
             {{-- ============================= --}}
             {{-- 一般ユーザー画面 --}}
             {{-- ============================= --}}
