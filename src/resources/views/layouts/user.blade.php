@@ -22,12 +22,13 @@
                 <nav class="header__nav">
                     <ul>
                         @php
-                            $isClockedOut = isset($attendance) && $attendance && $attendance->clock_out;
+                            $isClockPage = request()->routeIs('attendance.index'); 
+                            $isClockedOut = $isClockPage && isset($attendance) && $attendance && $attendance->clock_out;
                         @endphp
 
-                        @unless ($isClockedOut)
+                        @if (!$isClockedOut)
                             <li class="attendance"><a href="{{ route('attendance.index') }}">勤怠</a></li>
-                        @endunless
+                        @endif
 
                         <li class="all_attendance">
                             <a href="{{ route('attendance.list') }}">
