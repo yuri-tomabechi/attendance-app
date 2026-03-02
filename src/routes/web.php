@@ -40,11 +40,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'index'])
         ->name('admin.attendance_requests.index');
 
-    Route::post('/admin/attendance/update/{id}', [AdminAttendanceController::class, 'update'])
+    Route::post('/attendance/update/{id}', [AdminAttendanceController::class, 'update'])
         ->name('admin.attendance.update');
 
     Route::get('/attendance/{user}/csv', [AdminAttendanceController::class, 'exportCsv'])
         ->name('admin.attendance.csv');
+
+    Route::post(
+        '/attendance_requests/{id}/approve',
+        [AttendanceRequestController::class, 'approve']
+    )
+        ->name('admin.attendance_requests.approve');
 });
 
 
@@ -104,11 +110,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/stamp_correction_request/{id}', [AttendanceRequestController::class, 'show'])
         ->name('attendance_requests.show');
 
-    Route::post(
-        '/attendance_requests/{id}/approve',
-        [AttendanceRequestController::class, 'approve']
-    )
-        ->name('attendance_requests.approve');
+    // Route::post(
+    //     '/attendance_requests/{id}/approve',
+    //     [AttendanceRequestController::class, 'approve']
+    // )
+    //     ->name('attendance_requests.approve');
 
 
     // Route::get('/stamp_correction_request/{id}', [AttendanceRequestController::class, 'show'])

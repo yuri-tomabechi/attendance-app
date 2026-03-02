@@ -65,11 +65,13 @@ class AttendanceController extends Controller
 
     public function update(AttendanceRequest $request, $id)
     {
+        $data = $request->validated();
+
         $attendance = Attendance::findOrFail($id);
 
         $attendance->update([
-            'clock_in'  => $request->clock_in,
-            'clock_out' => $request->clock_out,
+            'clock_in' => $data['clock_in'],
+            'clock_out' => $data['clock_out'],
         ]);
 
         $latestRequest = AttendanceRequestModel::where('attendance_id', $attendance->id)
@@ -105,8 +107,10 @@ class AttendanceController extends Controller
             }
         }
 
-
-        return back()->with('success', '修正済み');
+        return redirect()
+            ->route('admin.attendance.show', $attendance->id)
+            ->with('admin_updated', true)
+            ->with('success', '修正済み');
     }
 
     public function exportCsv(Request $request, User $user)

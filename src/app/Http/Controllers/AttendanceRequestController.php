@@ -264,6 +264,8 @@ class AttendanceRequestController extends Controller
 
     public function approve($id)
     {
+        abort_unless(auth()->user()->role === 'admin', 403);
+
         $attendanceRequest = AttendanceRequestModel::with('items')->findOrFail($id);
 
         DB::transaction(function () use ($attendanceRequest) {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     @yield('meta')
@@ -8,8 +9,9 @@
     <title>COATHTECH</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/common.css') }}" />
-   @yield('css')
+    @yield('css')
 </head>
+
 <body>
     <header class="header">
         <div class="header__inner">
@@ -19,8 +21,20 @@
             <div class="header__right">
                 <nav class="header__nav">
                     <ul>
-                        <li class="attendance"><a href="{{ route('attendance.index') }}">勤怠</a></li>
-                        <li class="all_attendance"><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
+                        @php
+                            $isClockedOut = isset($attendance) && $attendance && $attendance->clock_out;
+                        @endphp
+
+                        @unless ($isClockedOut)
+                            <li class="attendance"><a href="{{ route('attendance.index') }}">勤怠</a></li>
+                        @endunless
+
+                        <li class="all_attendance">
+                            <a href="{{ route('attendance.list') }}">
+                                {{ $isClockedOut ? '今月の勤怠一覧' : '勤怠一覧' }}
+                            </a>
+                        </li>
+
                         <li class="request"><a href="{{ route('attendance_requests.index') }}">申請</a></li>
                         <li class="logout__button"><a href="/mylogout">ログアウト</a></li>
                     </ul>
@@ -30,8 +44,9 @@
     </header>
 
     <main>
-    @yield('content')
+        @yield('content')
     </main>
 
 </body>
+
 </html>
