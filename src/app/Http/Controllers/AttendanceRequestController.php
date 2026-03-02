@@ -55,9 +55,9 @@ class AttendanceRequestController extends Controller
                     : $attendance->clock_out;
 
                 // 出勤・退勤整合性チェック
-                if ($finalClockIn >= $finalClockOut) {
-                    throw new \Exception('出勤時間と退勤時間の整合性が不正です');
-                }
+                // if ($finalClockIn >= $finalClockOut) {
+                //     throw new \Exception('出勤時間と退勤時間の整合性が不正です');
+                // }
 
                 // 休憩チェック
                 foreach ($request->breaks ?? [] as $breakInput) {
@@ -113,7 +113,6 @@ class AttendanceRequestController extends Controller
 
                 if ($request->clock_in) {
 
-                    // $newClockIn = $attendance->work_date . ' ' . $request->clock_in . ':00';
                     $newClockIn = Carbon::parse($attendance->work_date)
                         ->setTimeFromTimeString($request->clock_in)
                         ->format('Y-m-d H:i:s');
@@ -130,7 +129,6 @@ class AttendanceRequestController extends Controller
 
                 if ($request->clock_out) {
 
-                    // $newClockOut = $attendance->work_date . ' ' . $request->clock_out . ':00';
                     $newClockOut = Carbon::parse($attendance->work_date)
                         ->setTimeFromTimeString($request->clock_out)
                         ->format('Y-m-d H:i:s');

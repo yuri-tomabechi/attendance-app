@@ -65,11 +65,6 @@ class AttendanceController extends Controller
 
     public function update(AttendanceRequest $request, $id)
     {
-        $request->validate([
-            'clock_in'  => 'required',
-            'clock_out' => 'required',
-            'reason'    => 'required|string|max:255',
-        ]);
         $attendance = Attendance::findOrFail($id);
 
         $attendance->update([

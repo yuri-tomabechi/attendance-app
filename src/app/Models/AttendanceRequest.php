@@ -11,6 +11,8 @@ use App\Models\AttendanceRequestItem;
 
 class AttendanceRequest extends Model
 {
+    use HasFactory;
+    
     protected $fillable = [
         'attendance_id',
         'user_id',

@@ -28,7 +28,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/attendance/index', [AdminAttendanceController::class, 'index'])
         ->name('admin.attendance.index');
 
-    Route::get('/attendance/detail/{id}',[AttendanceController::class, 'show'])
+    Route::get('/attendance/detail/{id}', [AttendanceController::class, 'show'])
         ->name('admin.attendance.show');
 
     Route::get('/attendance/list/{userId}', [AdminAttendanceController::class, 'list'])
@@ -39,6 +39,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'index'])
         ->name('admin.attendance_requests.index');
+
+    Route::post('/admin/attendance/update/{id}', [AdminAttendanceController::class, 'update'])
+        ->name('admin.attendance.update');
 
     Route::get('/attendance/{user}/csv', [AdminAttendanceController::class, 'exportCsv'])
         ->name('admin.attendance.csv');
@@ -101,12 +104,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/stamp_correction_request/{id}', [AttendanceRequestController::class, 'show'])
         ->name('attendance_requests.show');
 
-    Route::post('/attendance_requests/{id}/approve',
-    [AttendanceRequestController::class, 'approve'])
+    Route::post(
+        '/attendance_requests/{id}/approve',
+        [AttendanceRequestController::class, 'approve']
+    )
         ->name('attendance_requests.approve');
 
-    Route::post('/admin/attendance/update/{id}', [AdminAttendanceController::class, 'update'])
-        ->name('admin.attendance.update');
 
     // Route::get('/stamp_correction_request/{id}', [AttendanceRequestController::class, 'show'])
     //     ->name('attendance_requests.show');

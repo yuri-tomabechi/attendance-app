@@ -34,10 +34,10 @@
                         {{-- 申請なし → 管理者が直接修正 --}}
                         <div class="flex">
                             <input type="time" name="clock_in"
-                                value="{{ optional($attendance->clock_in)->format('H:i') }}">
+                                value="{{ old('clock_in', optional($attendance->clock_in)->format('H:i'))}}">
                             <span class="wave">～</span>
                             <input type="time" name="clock_out"
-                                value="{{ optional($attendance->clock_out)->format('H:i') }}">
+                                value="{{ old('clock_out',optional($attendance->clock_out)->format('H:i'))}}">
                         </div>
                     @else
                         <span class="readonly flex">
@@ -74,12 +74,12 @@
                             {{-- 申請なし → 管理者が直接修正 --}}
                             <div class="flex">
                                 <input type="time" name="breaks[{{ $index }}][break_start]"
-                                    value="{{ optional($break->break_start)->format('H:i') }}">
+                                    value="{{ old("breaks.$index.break_start", optional($break->break_start)->format('H:i')) }}">
 
                                 <span class="wave">～</span>
 
                                 <input type="time" name="breaks[{{ $index }}][break_end]"
-                                    value="{{ optional($break->break_end)->format('H:i') }}">
+                                    value="{{ old("breaks.$index.break_start", optional($break->break_end)->format('H:i')) }}">
 
                                 <input type="hidden" name="breaks[{{ $index }}][id]" value="{{ $break->id }}">
                             </div>
@@ -133,7 +133,7 @@
                     <span class="label">備考</span>
 
                     @if (!$latestRequest)
-                        <textarea name="reason" class="remark"></textarea>
+                        <textarea name="reason" class="remark">{{ old('reason') }}</textarea>
                     @else
                         <div class="readonly-remark">
                             {{ $latestRequest->reason }}
