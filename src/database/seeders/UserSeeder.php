@@ -23,6 +23,19 @@ class UserSeeder extends Seeder
                 'role' => 'admin',
                 'email_verified_at' => now(),
             ]);
+
+        User::create([
+            'name' => '山田太郎',
+            'email' => 'user@test.com',
+            'password' => Hash::make('12341234'),
+            'role' => 'user',
+            'email_verified_at' => now(),
+        ]);
+
+        User::factory()->count(3)->create([
+            'role' => 'user',
+            'email_verified_at' => now(),
+        ]);
     }
 
 }
