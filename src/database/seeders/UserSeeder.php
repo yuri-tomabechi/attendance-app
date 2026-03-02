@@ -32,7 +32,13 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        User::factory()->count(3)->create([
+
+        User::factory()->count(2)->create([
+            'role' => 'admin',
+            'email_verified_at' => now(),
+        ]);
+
+        User::factory()->count(5)->create([
             'role' => 'user',
             'email_verified_at' => now(),
         ]);
