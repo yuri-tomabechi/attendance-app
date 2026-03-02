@@ -100,6 +100,6 @@ php artisan migrate:fresh --seed
 ・phpMyAdmin: http://localhost:8080/  
 
 ## ER図
-![ER図](./attendance.png)  
+![ER図](./attendance-er.png)  
 
 

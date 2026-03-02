@@ -20,9 +20,7 @@ class CreateAttendanceRequests extends Migration
             $table->text('reason');
             $table->string('status')->default('pending');
             $table->timestamp('approved_at')->nullable();
-            $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete;
-            $table->timestamp('rejected_at')->nullable();
-            $table->foreignId('rejected_by')->nullable()->constrained('users')->nullOnDelete;
+            $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }
