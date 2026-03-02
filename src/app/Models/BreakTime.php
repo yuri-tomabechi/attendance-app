@@ -9,6 +9,9 @@ use App\Models\Attendance;
 class BreakTime extends Model
 {
     protected $table = 'breaks';
+    
+    use HasFactory;
+
 
     protected $fillable = [
         'attendance_id',

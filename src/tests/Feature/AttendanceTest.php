@@ -102,4 +102,123 @@ class AttendanceTest extends TestCase
 
         $response->assertSee('退勤済');
     }
+
+
+    /** @test */
+    public function 出勤ボタンが正しく機能する()
+    {
+        $now = Carbon::create(2026, 2, 27, 9, 0);
+        Carbon::setTestNow($now);
+
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // ① 勤務外なので出勤ボタンが表示される
+        $response = $this->get('/attendance');
+        $response->assertSee('出勤');
+
+        // ② 出勤処理
+        $this->post('/attendance/start');
+
+        // ③ DBに保存されているか確認
+        $this->assertDatabaseHas('attendances', [
+            'user_id' => $user->id,
+            'work_date' => $now->toDateString(),
+            'clock_in' => $now,
+        ]);
+
+        // ④ ステータス確認
+        $response = $this->get('/attendance');
+        $response->assertSee('出勤中');
+    }
+
+    /** @test */
+    public function 出勤は一日一回のみできる()
+    {
+        $now = Carbon::create(2026, 2, 27, 9, 0);
+        Carbon::setTestNow($now);
+
+        $user = User::factory()->create();
+
+        Attendance::create([
+            'user_id' => $user->id,
+            'work_date' => $now->toDateString(),
+            'clock_in' => $now,
+            'clock_out' => $now->copy()->addHours(8),
+            'status' => '4',
+        ]);
+
+        $this->actingAs($user);
+
+        $response = $this->get('/attendance');
+
+        $response->assertDontSee('出勤');
+    }
+
+    /** @test */
+    public function 出勤時刻が勤怠一覧画面で確認できる()
+    {
+        $now = Carbon::create(2026, 2, 27, 9, 0);
+        Carbon::setTestNow($now);
+
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->post('/attendance/start');
+
+        $response = $this->get('/attendance/list');
+
+        $response->assertSee($now->format('H:i'));
+    }
+
+    /** @test */
+    public function 退勤ボタンが正しく機能する()
+    {
+        $user = User::factory()->create();
+
+        // 勤務中のデータを作成
+        $attendance = Attendance::create([
+            'user_id' => $user->id,
+            'work_date' => now()->toDateString(),
+            'status' => 1, // 出勤中
+            'clock_in' => now()->subHour(),
+        ]);
+
+        $this->actingAs($user);
+
+        $response = $this->get('/attendance');
+        $response->assertSee('退勤');
+
+        $this->post('/attendance/end');
+
+        // DB確認
+        $this->assertDatabaseHas('attendances', [
+            'id' => $attendance->id,
+            'status' => 0,
+        ]);
+    }
+
+    /** @test */
+    public function 退勤時刻が勤怠一覧画面で確認できる()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        // 出勤
+        $this->post('/attendance/start');
+
+        // 退勤
+        $this->post('/attendance/end');
+
+        $attendance = Attendance::where('user_id', $user->id)->first();
+
+        $this->assertNotNull($attendance->clock_out);
+
+        $response = $this->get('/attendance/list');
+
+        $response->assertSee(
+            \Carbon\Carbon::parse($attendance->clock_out)->format('H:i')
+        );
+    }
 }

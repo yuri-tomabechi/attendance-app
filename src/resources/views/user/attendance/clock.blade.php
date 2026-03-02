@@ -33,7 +33,7 @@
                 {{-- 退勤済み --}}
                 <p class="thanks">お疲れ様でした。</p>
             @elseif($attendance->status === 1)
-                <div class="flex">
+                <div class="flex-button">
                     <form method="POST" action="{{ route('attendance.end') }}">
                         @csrf
                         <button type="submit">退勤</button>

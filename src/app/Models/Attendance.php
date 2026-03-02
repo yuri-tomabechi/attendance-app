@@ -9,8 +9,11 @@ use App\Models\BreakTime;
 use Carbon\Carbon;
 use App\Models\AttendanceRequest;
 
+
 class Attendance extends Model
 {
+    use HasFactory;
+    
     protected $fillable = [
         'user_id',
         'work_date',
